@@ -1,0 +1,23 @@
+/* Header shadow styling */
+.header-container {
+  position: relative;
+  border-bottom: none !important;
+}
+
+/* White light shadow at bottom of header */
+.header-container::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: white;
+  opacity: 0.3;
+  box-shadow: 0 0 8px 1px rgba(255, 255, 255, 0.5);
+}
+
+/* Add more prominent bottom shadow */
+.header-shadow {
+  box-shadow: 0 4px 12px -2px rgba(255, 255, 255, 0.15);
+}

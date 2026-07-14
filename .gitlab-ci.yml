@@ -1,0 +1,74 @@
+stages:
+  - build
+  - deploy
+
+# Shared setup, conditional on branch
+.before_script_stage:
+  before_script:
+    - apt-get update -y && apt-get install -y openssh-client
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts
+
+.before_script_production:
+  before_script:
+    - apt-get update -y && apt-get install -y openssh-client
+    - mkdir -p ~/.ssh
+    - echo "$PROD_SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-keyscan -H "$PROD_SSH_HOST" >> ~/.ssh/known_hosts
+
+# Build job for stage
+build_stage:
+  stage: build
+  image: node:18
+  extends: .before_script_stage
+  script:
+    - export NODE_OPTIONS="--max-old-space-size=8192"
+    - npm install --force
+    - npm run build
+    - ls -lsa dist/
+  artifacts:
+    paths:
+      - dist/
+  only:
+    - stage
+
+# Deploy job for stage
+deploy_stage:
+  stage: deploy
+  extends: .before_script_stage
+  script:
+    - echo "Deploying to EC2 (stage)..."
+    - scp -r dist/* "$SSH_USER@$SSH_HOST:$DEPLOY_PATH"
+    - ssh "$SSH_USER@$SSH_HOST" "sudo systemctl reload nginx"
+  only:
+    - stage
+
+# Build job for production
+build_production:
+  stage: build
+  image: node:18
+  extends: .before_script_production
+  script:
+    - export NODE_OPTIONS="--max-old-space-size=8192"
+    - npm install --force
+    - npm run build
+    - ls -lsa dist/
+  artifacts:
+    paths:
+      - dist/
+  only:
+    - production
+
+# Deploy job for production
+deploy_production:
+  stage: deploy
+  extends: .before_script_production
+  script:
+    - echo "Deploying to EC2 (production)..."
+    - scp -r dist/* "$PROD_SSH_USER@$PROD_SSH_HOST:$PROD_DEPLOY_PATH"
+    - ssh "$PROD_SSH_USER@$PROD_SSH_HOST" "sudo systemctl reload nginx"
+  only:
+    - production

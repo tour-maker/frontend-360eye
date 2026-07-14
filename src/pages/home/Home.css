@@ -1,0 +1,95 @@
+/* Scroll snap container */
+.snap-y {
+  scroll-snap-type: y mandatory;
+
+}
+
+.snap-start {
+  scroll-snap-align: start;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Scrollbar styling (optional) */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+
+/* Prevent any overflow issues */
+.aspect-video {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Responsive video container */
+@media (max-width: 640px) {
+  .max-height-70vh {
+    max-height: 60vh;
+  }
+}
+
+/* Target the Commercial Films section specifically */
+section:nth-of-type(3) .max-h-\[70vh\] {
+  border-radius: 0 !important;
+  overflow: hidden !important;
+  position: relative;
+  z-index: 1;
+}
+
+section:nth-of-type(3) video {
+  border-radius: 0 !important;
+  overflow: hidden !important;
+  /* Removed clip path for no rounding */
+  -webkit-clip-path: none;
+  clip-path: none;
+}
+
+/* Force hardware acceleration for smoother rendering */
+section:nth-of-type(3) .max-h-\[70vh\],
+section:nth-of-type(3) video {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* iPad specific fixes */
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+  .safe-bottom {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom, 1rem));
+  }
+  
+  /* Fix for overlapping buttons on iPad */
+  section {
+    padding-bottom: env(safe-area-inset-bottom, 0.5rem);
+  }
+}
+
+/* Add safe area support for mobile devices */
+@supports (padding: max(0px)) {
+  .safe-bottom {
+    padding-bottom: max(1.5rem, env(safe-area-inset-bottom, 1.5rem));
+  }
+  
+  section {
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+}
+

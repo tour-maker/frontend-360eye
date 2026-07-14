@@ -1,0 +1,6 @@
+<svg width="800" height="450" xmlns="http://www.w3.org/2000/svg">
+    <rect width="800" height="450" fill="#1a1a1a"/>
+    <text x="400" y="200" font-family="Arial" font-size="32" fill="#87BA3A" text-anchor="middle" dominant-baseline="middle">360Eye Gallery</text>
+    <text x="400" y="250" font-family="Arial" font-size="28" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">retail1</text>
+    <text x="400" y="300" font-family="Arial" font-size="20" fill="#cccccc" text-anchor="middle" dominant-baseline="middle">Sample Gallery Item 5</text>
+  </svg>

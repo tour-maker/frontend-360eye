@@ -1,0 +1,60 @@
+/* Super aggressive overrides for fullpage navigation dots */
+.apcx-fullpage-navigation *,
+.ap-fullpage-navigation *,
+[class*="fullpage"] [class*="dot"],
+[class*="fullpage-nav"] *,
+[class*="ap"] [class*="nav"] * {
+  background-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+.apcx-fullpage-navigation *:hover,
+.ap-fullpage-navigation *:hover,
+[class*="fullpage"] [class*="dot"]:hover,
+[class*="fullpage-nav"] *:hover,
+[class*="ap"] [class*="nav"] *:hover {
+  background-color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.apcx-fullpage-navigation *[aria-current="true"],
+.apcx-fullpage-navigation *[aria-pressed="true"],
+.apcx-fullpage-navigation *.active,
+.ap-fullpage-navigation *.active,
+[class*="fullpage"] [class*="dot"].active,
+[class*="fullpage-nav"] *.active,
+[class*="ap"] [class*="nav"] *.active,
+.ap-fullpage-navigation *[aria-current="true"],
+.ap-fullpage-navigation *[aria-pressed="true"],
+[class*="fullpage"] [class*="dot"][aria-current="true"],
+[class*="fullpage"] [class*="dot"][aria-pressed="true"],
+[class*="fullpage-nav"] *[aria-current="true"],
+[class*="fullpage-nav"] *[aria-pressed="true"],
+[class*="ap"] [class*="nav"] *[aria-current="true"],
+[class*="ap"] [class*="nav"] *[aria-pressed="true"] {
+  background-color: #FFFFFF !important;
+}
+
+/* Target all possible button variations */
+[role="navigation"] button,
+[role="tablist"] button {
+  width: 12px !important;
+  height: 12px !important;
+  border-radius: 50% !important;
+  margin: 5px 0 !important;
+  border: none !important;
+  padding: 0 !important;
+  background-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+[role="navigation"] button:hover,
+[role="tablist"] button:hover {
+  background-color: rgba(255, 255, 255, 0.6) !important;
+}
+
+[role="navigation"] button[aria-selected="true"],
+[role="navigation"] button[aria-current="true"],
+[role="navigation"] button[aria-pressed="true"],
+[role="tablist"] button[aria-selected="true"],
+[role="tablist"] button[aria-current="true"],
+[role="tablist"] button[aria-pressed="true"] {
+  background-color: #FFFFFF !important;
+}

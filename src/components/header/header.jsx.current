@@ -1,0 +1,86 @@
+                  >
+                    <motion.div
+                      initial="hidden"
+                      animate="visible"
+                      exit="hidden"
+                      variants={{
+                        hidden: { transition: { staggerChildren: 0.05, staggerDirection: -1 } },
+                        visible: { 
+                          transition: { 
+                            stagg              }}
+                      className="py-1"
+                    >
+              <AnimatePresence>
+                {showGalleryDropdown && (
+                  <motion.div
+                    className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 bg-black/95 text-white py-1 rounded-lg shadow-2xl z-10 min-w-[250px] overflow-hidden border border-white/10 backdrop-blur-md"
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ 
+                      height: "auto",
+                      opacity: 1,
+                      transition: { 
+                        duration: 0.5,
+                        ease: [0.4, 0, 0.2, 1]
+                      }
+                    }}
+                    exit={{ 
+                      height: 0,
+                      opacity: 0,
+                      transition: { 
+                        duration: 0.4,
+                        ease: [0.4, 0, 0.2, 1]
+                      }
+                    }}
+            <motion.button
+              className={`text-base hover:text-[#87BA3A] transition-colors duration-300 ${
+                isGalleryShowcase360 || isCommercialPhotography || isCommercialFilms 
+                  ? "text-[#87BA3A]" 
+                  : ""
+              }`}
+              onClick={toggleGalleryDropdown}
+              whileHover={{ scale: 1.03 }}
+              transition={{ type: "spring", stiffness: 300, damping: 10 }}
+            >
+                {getCurrentPageName()}
+                <motion.span
+                  animate={{ rotate: showGalleryDropdown ? 180 : 0 }}
+                  transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+                  className="inline-block ml-1"
+                > ▼
+                </motion.span>
+              </motion.button>
+            
+            <NavLink 
+              to="/showcase360" 
+              className={({isActive}) => `text-base hover:text-[#87BA3A] transition-colors ${isActive ? "text-[#87BA3A]" : ""}`}
+              onClick={closeAll}
+            >
+              SHOWCASE360
+            </NavLink>
+            
+            <div className="relative" ref={dropdownRef}>
+              <NavLink 
+                to="/" 
+                className={({isActive}) => `text-base hover:text-[#87BA3A] transition-colors ${isActive ? "text-[#87BA3A]" : ""}`}
+                onClick={closeAll}
+              >
+                HOME
+              </NavLink>
+        {!showMenu && (
+          <div className="hidden md:flex items-center justify-between w-full px-8 py-4">
+            <Link to="/" className="text-2xl tracking-wide" onClick={closeAll}>
+              <span className="text-white font-extralight">360</span>
+              <span className="text-[#87BA3A] font-medium">EYE</span>
+            </Link>
+            
+            <div className="flex items-center space-x-8 text-white">
+        <nav className="hidden md:block w-full h-full">
+          <div className="w-full h-full  flex justify-center items-center text-white
+            space-x-6 sm:space-x-8 md:space-x-12 lg:space-x-20 px-4 md:px-8 shadows flex-wrap ">
+            <NavLink 
+              to="/" 
+              className={({isActive}) => `text-base hover:text-[#87BA3A] transition-colors ${isActive ? "text-[#87BA3A]" : ""}`}
+              onClick={closeAll}
+            >
+              HOME
+            </NavLink>
