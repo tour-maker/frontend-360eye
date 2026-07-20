@@ -9,6 +9,8 @@ import { CommercialFlims } from "./src/pages/Commercials/CommercialFlims";
 import { CommercialPhotography } from "./src/pages/Commercials/CommercialPhotography";
 import { AlbumImages } from "./src/pages/Commercials/AlbumImages";
 import { GalleryViewer } from './src/components/virtualTour/VirtualTourViewer';
+import Blog from "./src/pages/Blog/Blog";
+import BlogDetail from "./src/pages/Blog/BlogDetail";
  
 
 export const router = createBrowserRouter([
@@ -56,6 +58,16 @@ export const router = createBrowserRouter([
         path: "3darchvizrendering/:albumId",  // Remove index:true
         element: <AlbumImages/>,
         id: "9",
+      },
+      {
+        path: "blog",
+        element: <Blog/>,
+        id: "10",
+      },
+      {
+        path: "blog/:id",
+        element: <BlogDetail/>,
+        id: "11",
       },
     ],
   },
