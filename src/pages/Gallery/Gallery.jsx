@@ -27,6 +27,10 @@ export const Gallery = () => {
   const [filteredTypeOptions, setFilteredTypeOptions] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
 
+  const [selectedBHK, setSelectedBHK] = useState("");
+  const [voiceOverOnly, setVoiceOverOnly] = useState(false);
+  const [selectedViewMode, setSelectedViewMode] = useState("");
+
   const [selectedPropertyStatuses, setSelectedPropertyStatuses] = useState(
     searchParams.get('status') ? searchParams.get('status').split(',') : []
   );
@@ -111,6 +115,9 @@ export const Gallery = () => {
               propertyType: typesMap[product.propertyType] || '',
               propertyTypePhoto: propertyTypesMap[product.propertyType] || '',
               area: product.area || "",
+              bhkType: product.bhkType || "",
+              hasVoiceOver: !!product.hasVoiceOver,
+              viewMode: product.viewMode || "Day",
             };
           });
           
@@ -157,7 +164,7 @@ export const Gallery = () => {
     if (data.length > 0) {
       filterData(searchQuery, selectedPropertyStatuses, selectedPropertyTypes, selectedAreas);
     }
-  }, [data, searchQuery, selectedPropertyStatuses, selectedPropertyTypes, selectedAreas]);
+  }, [data, searchQuery, selectedPropertyStatuses, selectedPropertyTypes, selectedAreas, selectedBHK, voiceOverOnly, selectedViewMode]);
 
   const isMobile = windowWidth < 640;
 
@@ -188,6 +195,20 @@ export const Gallery = () => {
       );
     }
 
+    if (selectedBHK) {
+      filtered = filtered.filter((item) => item.bhkType === selectedBHK);
+    }
+
+    if (voiceOverOnly) {
+      filtered = filtered.filter((item) => item.hasVoiceOver === true);
+    }
+
+    if (selectedViewMode) {
+      filtered = filtered.filter(
+        (item) => item.viewMode === selectedViewMode || item.viewMode === "Both"
+      );
+    }
+
     setFilteredData(filtered);
   };
 
@@ -202,6 +223,9 @@ export const Gallery = () => {
     setSelectedPropertyStatuses([]);
     setSelectedPropertyTypes([]);
     setSelectedAreas([]);
+    setSelectedBHK("");
+    setVoiceOverOnly(false);
+    setSelectedViewMode("");
     setFilteredData([...data]);
   };
 
@@ -687,6 +711,34 @@ export const Gallery = () => {
                       active={selectedAreas.length > 0}
                       mobile
                     />
+                    <select
+                      value={selectedBHK}
+                      onChange={(e) => setSelectedBHK(e.target.value)}
+                      className={`rounded-xl border px-2 py-1 text-xs bg-transparent flex-shrink-0 ${selectedBHK ? "border-[#86BA3A] text-[#86BA3A]" : "border-gray-600 text-gray-300"}`}
+                    >
+                      <option value="" className="bg-black">BHK</option>
+                      <option value="2 BHK" className="bg-black">2 BHK</option>
+                      <option value="3 BHK" className="bg-black">3 BHK</option>
+                      <option value="5 BHK" className="bg-black">5 BHK</option>
+                    </select>
+                    <FilterButton
+                      icon={<FiHome size={18} />}
+                      label="Voice Over"
+                      onClick={() => setVoiceOverOnly((v) => !v)}
+                      active={voiceOverOnly}
+                      mobile
+                    />
+                    <FilterButton
+                      icon={<FiHome size={18} />}
+                      label={selectedViewMode || "Day/Night"}
+                      onClick={() =>
+                        setSelectedViewMode((v) =>
+                          v === "" ? "Day" : v === "Day" ? "Night" : ""
+                        )
+                      }
+                      active={!!selectedViewMode}
+                      mobile
+                    />
                     <button
                       onClick={handleReset}
                       className={`p-2 rounded-full border flex-shrink-0 ${
@@ -743,6 +795,32 @@ export const Gallery = () => {
                   label="Area"
                   onClick={() => handleDropdownClick("Area")}
                   active={selectedAreas.length > 0}
+                />
+                <select
+                  value={selectedBHK}
+                  onChange={(e) => setSelectedBHK(e.target.value)}
+                  className={`rounded-xl border px-3 py-2 text-sm bg-transparent ${selectedBHK ? "border-[#86BA3A] text-[#86BA3A]" : "border-gray-600 text-gray-300"}`}
+                >
+                  <option value="" className="bg-black">BHK</option>
+                  <option value="2 BHK" className="bg-black">2 BHK</option>
+                  <option value="3 BHK" className="bg-black">3 BHK</option>
+                  <option value="5 BHK" className="bg-black">5 BHK</option>
+                </select>
+                <FilterButton
+                  icon={<FiHome size={16} />}
+                  label="Voice Over"
+                  onClick={() => setVoiceOverOnly((v) => !v)}
+                  active={voiceOverOnly}
+                />
+                <FilterButton
+                  icon={<FiHome size={16} />}
+                  label={selectedViewMode || "Day/Night"}
+                  onClick={() =>
+                    setSelectedViewMode((v) =>
+                      v === "" ? "Day" : v === "Day" ? "Night" : ""
+                    )
+                  }
+                  active={!!selectedViewMode}
                 />
               </div>
             </div>
