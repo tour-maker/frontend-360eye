@@ -115,7 +115,9 @@ export const Gallery = () => {
               propertyType: typesMap[product.propertyType] || '',
               propertyTypePhoto: propertyTypesMap[product.propertyType] || '',
               area: product.area || "",
-              bhkType: product.bhkType || "",
+              bhkType: Array.isArray(product.bhkType)
+                ? product.bhkType
+                : (product.bhkType ? [product.bhkType] : []),
               hasVoiceOver: !!product.hasVoiceOver,
               viewMode: product.viewMode || "Day",
             };
@@ -196,7 +198,7 @@ export const Gallery = () => {
     }
 
     if (selectedBHK) {
-      filtered = filtered.filter((item) => item.bhkType === selectedBHK);
+      filtered = filtered.filter((item) => Array.isArray(item.bhkType) && item.bhkType.includes(selectedBHK));
     }
 
     if (voiceOverOnly) {
@@ -620,6 +622,8 @@ export const Gallery = () => {
                   <option value="" className="bg-black">All</option>
                   <option value="2 BHK" className="bg-black">2 BHK</option>
                   <option value="3 BHK" className="bg-black">3 BHK</option>
+                  <option value="3.5 BHK" className="bg-black">3.5 BHK</option>
+                  <option value="4 BHK" className="bg-black">4 BHK</option>
                   <option value="5 BHK" className="bg-black">5 BHK</option>
                 </select>
               </div>
