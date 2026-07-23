@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FiSearch, FiX, FiMapPin, FiHome, FiFilter, FiMenu, FiLayers, FiRefreshCw, FiArrowRight, FiCheckCircle } from "react-icons/fi";
+import { FiSearch, FiX, FiMapPin, FiHome, FiFilter, FiMenu, FiLayers, FiRefreshCw, FiArrowRight, FiCheckCircle, FiSliders } from "react-icons/fi";
 import { IoMdArrowDropdown } from "react-icons/io";
 import {
   fetchProducts,
@@ -598,6 +598,59 @@ export const Gallery = () => {
   
     // Always use getOptions() to ensure filtering logic is applied consistently
     const displayOptions = getOptions();
+
+    if (title === "Configuration") {
+      return (
+        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-gray-900 rounded-xl max-w-md w-full border border-gray-700 shadow-2xl flex flex-col" style={{ maxHeight: '80vh' }}>
+            <div className="bg-gray-900 p-4 border-b border-gray-800 flex justify-between items-center">
+              <h3 className="text-xl font-medium">Configuration</h3>
+              <button onClick={onClose} className="text-gray-400 hover:text-white">
+                <FiX size={24} />
+              </button>
+            </div>
+            <div className="overflow-y-auto p-4 space-y-4" style={{ maxHeight: '60vh' }}>
+              <div>
+                <label className="block text-sm text-gray-400 mb-2">BHK</label>
+                <select
+                  value={selectedBHK}
+                  onChange={(e) => setSelectedBHK(e.target.value)}
+                  className={`w-full rounded-xl border px-3 py-2 text-sm bg-transparent ${selectedBHK ? "border-[#86BA3A] text-[#86BA3A]" : "border-gray-600 text-gray-300"}`}
+                >
+                  <option value="" className="bg-black">All</option>
+                  <option value="2 BHK" className="bg-black">2 BHK</option>
+                  <option value="3 BHK" className="bg-black">3 BHK</option>
+                  <option value="5 BHK" className="bg-black">5 BHK</option>
+                </select>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-400">Voice Over</span>
+                <button
+                  onClick={() => setVoiceOverOnly((v) => !v)}
+                  className={`rounded-xl border px-4 py-2 text-sm ${voiceOverOnly ? "border-[#86BA3A] text-[#86BA3A]" : "border-gray-600 text-gray-300"}`}
+                >
+                  {voiceOverOnly ? "On" : "Off"}
+                </button>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-400">Day / Night</span>
+                <button
+                  onClick={() =>
+                    setSelectedViewMode((v) =>
+                      v === "" ? "Day" : v === "Day" ? "Night" : ""
+                    )
+                  }
+                  className={`rounded-xl border px-4 py-2 text-sm ${selectedViewMode ? "border-[#86BA3A] text-[#86BA3A]" : "border-gray-600 text-gray-300"}`}
+                >
+                  {selectedViewMode || "All"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
   
     return (
       <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4" onClick={(e) => e.stopPropagation()}>
@@ -711,32 +764,11 @@ export const Gallery = () => {
                       active={selectedAreas.length > 0}
                       mobile
                     />
-                    <select
-                      value={selectedBHK}
-                      onChange={(e) => setSelectedBHK(e.target.value)}
-                      className={`rounded-xl border px-2 py-1 text-xs bg-transparent flex-shrink-0 ${selectedBHK ? "border-[#86BA3A] text-[#86BA3A]" : "border-gray-600 text-gray-300"}`}
-                    >
-                      <option value="" className="bg-black">BHK</option>
-                      <option value="2 BHK" className="bg-black">2 BHK</option>
-                      <option value="3 BHK" className="bg-black">3 BHK</option>
-                      <option value="5 BHK" className="bg-black">5 BHK</option>
-                    </select>
-                    <FilterButton
-                      icon={<FiHome size={18} />}
-                      label="Voice Over"
-                      onClick={() => setVoiceOverOnly((v) => !v)}
-                      active={voiceOverOnly}
-                      mobile
-                    />
-                    <FilterButton
-                      icon={<FiHome size={18} />}
-                      label={selectedViewMode || "Day/Night"}
-                      onClick={() =>
-                        setSelectedViewMode((v) =>
-                          v === "" ? "Day" : v === "Day" ? "Night" : ""
-                        )
-                      }
-                      active={!!selectedViewMode}
+                                        <FilterButton
+                      icon={<FiSliders size={18} />}
+                      label="Configuration"
+                      onClick={() => handleDropdownClick("Configuration")}
+                      active={!!selectedBHK || voiceOverOnly || !!selectedViewMode}
                       mobile
                     />
                     <button
@@ -796,31 +828,11 @@ export const Gallery = () => {
                   onClick={() => handleDropdownClick("Area")}
                   active={selectedAreas.length > 0}
                 />
-                <select
-                  value={selectedBHK}
-                  onChange={(e) => setSelectedBHK(e.target.value)}
-                  className={`rounded-xl border px-3 py-2 text-sm bg-transparent ${selectedBHK ? "border-[#86BA3A] text-[#86BA3A]" : "border-gray-600 text-gray-300"}`}
-                >
-                  <option value="" className="bg-black">BHK</option>
-                  <option value="2 BHK" className="bg-black">2 BHK</option>
-                  <option value="3 BHK" className="bg-black">3 BHK</option>
-                  <option value="5 BHK" className="bg-black">5 BHK</option>
-                </select>
-                <FilterButton
-                  icon={<FiHome size={16} />}
-                  label="Voice Over"
-                  onClick={() => setVoiceOverOnly((v) => !v)}
-                  active={voiceOverOnly}
-                />
-                <FilterButton
-                  icon={<FiHome size={16} />}
-                  label={selectedViewMode || "Day/Night"}
-                  onClick={() =>
-                    setSelectedViewMode((v) =>
-                      v === "" ? "Day" : v === "Day" ? "Night" : ""
-                    )
-                  }
-                  active={!!selectedViewMode}
+                                <FilterButton
+                  icon={<FiSliders size={16} />}
+                  label="Configuration"
+                  onClick={() => handleDropdownClick("Configuration")}
+                  active={!!selectedBHK || voiceOverOnly || !!selectedViewMode}
                 />
               </div>
             </div>
