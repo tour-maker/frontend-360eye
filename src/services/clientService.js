@@ -7,7 +7,7 @@ export const fetchSliders = async () => {
   try {
     
     
-    const response = await axios.get(`${API_URL}/admin/sliders`);
+    const response = await axios.get(`${API_URL}/public/sliders`);
     
     
     

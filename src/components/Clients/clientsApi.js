@@ -16,7 +16,7 @@ export const fetchClientLogos = async () => {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
     
-    const response = await fetch(`${API_URL}/admin/sliders`, {
+    const response = await fetch(`${API_URL}/public/sliders`, {
       signal: controller.signal,
       headers: {
         'Accept': 'application/json',
