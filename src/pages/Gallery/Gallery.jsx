@@ -238,38 +238,35 @@ export const Gallery = () => {
   };
 
   const handleOptionSelect = (option) => {
-    let newSelectedOptions = [option];
-    
+    const toggle = (arr) =>
+      arr.includes(option) ? arr.filter((v) => v !== option) : [...arr, option];
+
+    let updatedStatuses = selectedPropertyStatuses;
+    let updatedTypes = selectedPropertyTypes;
+    let updatedAreas = selectedAreas;
+
     switch (selectedDropdown) {
       case "Property Status":
-        setSelectedPropertyStatuses(newSelectedOptions);
+        updatedStatuses = toggle(selectedPropertyStatuses);
+        setSelectedPropertyStatuses(updatedStatuses);
         const typesForStatus = data
-          .filter(item => item.propertyStatus === option)
+          .filter(item => updatedStatuses.includes(item.propertyStatus))
           .map(item => item.propertyType)
           .filter((value, index, self) => value && self.indexOf(value) === index);
         setFilteredTypeOptions(typesForStatus);
         break;
-        
       case "Property Type":
-        setSelectedPropertyTypes(newSelectedOptions);
+        updatedTypes = toggle(selectedPropertyTypes);
+        setSelectedPropertyTypes(updatedTypes);
         break;
-        
       case "Area":
-        setSelectedAreas(newSelectedOptions);
+        updatedAreas = toggle(selectedAreas);
+        setSelectedAreas(updatedAreas);
         break;
-        
       default:
         return;
     }
-
-    filterData(
-      searchQuery,
-      selectedDropdown === "Property Status" ? newSelectedOptions : selectedPropertyStatuses,
-      selectedDropdown === "Property Type" ? newSelectedOptions : selectedPropertyTypes,
-      selectedDropdown === "Area" ? newSelectedOptions : selectedAreas
-    );
-
-    setIsModalOpen(false);
+    filterData(searchQuery, updatedStatuses, updatedTypes, updatedAreas);
   };
 
   const removeFilter = (filterType, value) => {
@@ -288,6 +285,15 @@ export const Gallery = () => {
         const newAreas = selectedAreas.filter(area => area !== value);
         setSelectedAreas(newAreas);
         filterData(searchQuery, selectedPropertyStatuses, selectedPropertyTypes, newAreas);
+        break;
+      case 'BHK':
+        setSelectedBHKs(selectedBHKs.filter(v => v !== value));
+        break;
+      case 'ViewMode':
+        setSelectedViewModes(selectedViewModes.filter(v => v !== value));
+        break;
+      case 'VoiceOver':
+        setVoiceOverOnly(false);
         break;
     }
   };
@@ -325,7 +331,18 @@ export const Gallery = () => {
         type: 'Area', 
         value: area,
         icon: <FiMapPin className="text-gray-400 mr-1" size={14} />
-      }))
+      })),
+      ...selectedBHKs.map(bhk => ({
+        type: 'BHK',
+        value: bhk,
+        icon: null
+      })),
+      ...selectedViewModes.map(vm => ({
+        type: 'ViewMode',
+        value: vm,
+        icon: null
+      })),
+      ...(voiceOverOnly ? [{ type: 'VoiceOver', value: 'Voice Over', icon: null }] : [])
     ];
   
     if (allFilters.length === 0 && !searchQuery) return null;
@@ -674,12 +691,19 @@ export const Gallery = () => {
           <div className="overflow-y-auto" style={{ maxHeight: '60vh' }}>
             {displayOptions.length > 0 ? (
               <div className="p-4 space-y-2">
-                {displayOptions.map((option, index) => (
+                {displayOptions.map((option, index) => {
+                  const selectedArr =
+                    title === "Property Status" ? selectedPropertyStatuses :
+                    title === "Property Type" ? selectedPropertyTypes :
+                    selectedAreas;
+                  const isSelected = selectedArr.includes(option.name);
+                  return (
                   <button
                     key={index}
                     onClick={() => onSelect(option.name)}
-                    className="w-full text-left px-4 py-3 hover:bg-gray-800 rounded-lg transition-colors flex items-center gap-3"
+                    className={`w-full text-left px-4 py-3 hover:bg-gray-800 rounded-lg transition-colors flex items-center gap-3 justify-between ${isSelected ? "text-[#86BA3A]" : ""}`}
                   >
+                    <div className="flex items-center gap-3">
                     {option.photo ? (
                       <img 
                         src={`${import.meta.env.VITE_BACKEND_URL}${option.photo}`}
@@ -702,8 +726,11 @@ export const Gallery = () => {
                       </div>
                     )}
                     <span>{option.name}</span>
+                    </div>
+                    {isSelected && <FiCheckCircle size={18} />}
                   </button>
-                ))}
+                  );
+                })}
               </div>
             ) : (
               <p className="text-gray-400 text-center py-4">
