@@ -30,7 +30,6 @@ export const Gallery = () => {
   const [selectedBHKs, setSelectedBHKs] = useState([]);
   const [voiceOverOnly, setVoiceOverOnly] = useState(false);
   const [selectedViewModes, setSelectedViewModes] = useState([]);
-  const [selectedPlotStatuses, setSelectedPlotStatuses] = useState([]);
 
   const [selectedPropertyStatuses, setSelectedPropertyStatuses] = useState(
     searchParams.get('status') ? searchParams.get('status').split(',') : []
@@ -168,7 +167,7 @@ export const Gallery = () => {
     if (data.length > 0) {
       filterData(searchQuery, selectedPropertyStatuses, selectedPropertyTypes, selectedAreas);
     }
-  }, [data, searchQuery, selectedPropertyStatuses, selectedPropertyTypes, selectedAreas, selectedBHKs, voiceOverOnly, selectedViewModes, selectedPlotStatuses]);
+  }, [data, searchQuery, selectedPropertyStatuses, selectedPropertyTypes, selectedAreas, selectedBHKs, voiceOverOnly, selectedViewModes]);
 
   const isMobile = windowWidth < 640;
 
@@ -212,9 +211,6 @@ export const Gallery = () => {
         (item) => selectedViewModes.includes(item.viewMode) || item.viewMode === "Both"
       );
     }
-    if (selectedPlotStatuses.length > 0) {
-      filtered = filtered.filter((item) => selectedPlotStatuses.includes(item.plotStatus));
-    }
 
     setFilteredData(filtered);
   };
@@ -233,7 +229,6 @@ export const Gallery = () => {
     setSelectedBHKs([]);
     setVoiceOverOnly(false);
     setSelectedViewModes([]);
-    setSelectedPlotStatuses([]);
     setFilteredData([...data]);
   };
 
@@ -609,11 +604,6 @@ export const Gallery = () => {
 
     if (title === "Tag") {
       const bhkOptions = ["2 BHK", "3 BHK", "3.5 BHK", "4 BHK", "5 BHK"];
-      const plotStatusOptions = ["Available", "Reserved", "Sold"];
-
-      const pillClass = (active) =>
-        `rounded-xl border px-4 py-2 text-sm ${active ? "border-[#86BA3A] text-[#86BA3A]" : "border-gray-600 text-gray-300"}`;
-
       const toggleArrayValue = (setter, currentArray, value) => {
         setter(
           currentArray.includes(value)
@@ -621,7 +611,8 @@ export const Gallery = () => {
             : [...currentArray, value]
         );
       };
-
+      const rowClass = (active) =>
+        `w-full text-left px-4 py-3 hover:bg-gray-800 rounded-lg transition-colors flex items-center justify-between ${active ? "text-[#86BA3A]" : ""}`;
       return (
         <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4" onClick={(e) => e.stopPropagation()}>
           <div className="bg-gray-900 rounded-xl max-w-md w-full border border-gray-700 shadow-2xl flex flex-col" style={{ maxHeight: '80vh' }}>
@@ -632,44 +623,37 @@ export const Gallery = () => {
               </button>
             </div>
             <div className="overflow-y-auto p-4" style={{ maxHeight: '60vh' }}>
-              <div className="flex flex-wrap gap-2">
-                {bhkOptions.map((option) => (
-                  <button
-                    key={option}
-                    onClick={() => toggleArrayValue(setSelectedBHKs, selectedBHKs, option)}
-                    className={pillClass(selectedBHKs.includes(option))}
-                  >
-                    {option}
-                  </button>
-                ))}
+              {bhkOptions.map((option) => (
                 <button
-                  onClick={() => toggleArrayValue(setSelectedViewModes, selectedViewModes, "Day")}
-                  className={pillClass(selectedViewModes.includes("Day"))}
+                  key={option}
+                  onClick={() => toggleArrayValue(setSelectedBHKs, selectedBHKs, option)}
+                  className={rowClass(selectedBHKs.includes(option))}
                 >
-                  Day
+                  <span>{option}</span>
+                  {selectedBHKs.includes(option) && <FiCheckCircle size={18} />}
                 </button>
-                <button
-                  onClick={() => toggleArrayValue(setSelectedViewModes, selectedViewModes, "Night")}
-                  className={pillClass(selectedViewModes.includes("Night"))}
-                >
-                  Night
-                </button>
-                <button
-                  onClick={() => setVoiceOverOnly((v) => !v)}
-                  className={pillClass(voiceOverOnly)}
-                >
-                  Voice Over
-                </button>
-                {plotStatusOptions.map((option) => (
-                  <button
-                    key={option}
-                    onClick={() => toggleArrayValue(setSelectedPlotStatuses, selectedPlotStatuses, option)}
-                    className={pillClass(selectedPlotStatuses.includes(option))}
-                  >
-                    {option}
-                  </button>
-                ))}
-              </div>
+              ))}
+              <button
+                onClick={() => toggleArrayValue(setSelectedViewModes, selectedViewModes, "Day")}
+                className={rowClass(selectedViewModes.includes("Day"))}
+              >
+                <span>Day</span>
+                {selectedViewModes.includes("Day") && <FiCheckCircle size={18} />}
+              </button>
+              <button
+                onClick={() => toggleArrayValue(setSelectedViewModes, selectedViewModes, "Night")}
+                className={rowClass(selectedViewModes.includes("Night"))}
+              >
+                <span>Night</span>
+                {selectedViewModes.includes("Night") && <FiCheckCircle size={18} />}
+              </button>
+              <button
+                onClick={() => setVoiceOverOnly((v) => !v)}
+                className={rowClass(voiceOverOnly)}
+              >
+                <span>Voice Over</span>
+                {voiceOverOnly && <FiCheckCircle size={18} />}
+              </button>
             </div>
           </div>
         </div>
@@ -793,7 +777,7 @@ export const Gallery = () => {
                       icon={<FiSliders size={18} />}
                       label="Tag"
                       onClick={() => handleDropdownClick("Tag")}
-                      active={selectedBHKs.length > 0 || voiceOverOnly || selectedViewModes.length > 0 || selectedPlotStatuses.length > 0}
+                      active={selectedBHKs.length > 0 || voiceOverOnly || selectedViewModes.length > 0}
                       mobile
                     />
                     <button
@@ -857,7 +841,7 @@ export const Gallery = () => {
                   icon={<FiSliders size={16} />}
                   label="Tag"
                   onClick={() => handleDropdownClick("Tag")}
-                  active={selectedBHKs.length > 0 || voiceOverOnly || selectedViewModes.length > 0 || selectedPlotStatuses.length > 0}
+                  active={selectedBHKs.length > 0 || voiceOverOnly || selectedViewModes.length > 0}
                 />
               </div>
             </div>
