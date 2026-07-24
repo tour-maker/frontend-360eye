@@ -27,9 +27,10 @@ export const Gallery = () => {
   const [filteredTypeOptions, setFilteredTypeOptions] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [selectedBHK, setSelectedBHK] = useState("");
+  const [selectedBHKs, setSelectedBHKs] = useState([]);
   const [voiceOverOnly, setVoiceOverOnly] = useState(false);
-  const [selectedViewMode, setSelectedViewMode] = useState("");
+  const [selectedViewModes, setSelectedViewModes] = useState([]);
+  const [selectedPlotStatuses, setSelectedPlotStatuses] = useState([]);
 
   const [selectedPropertyStatuses, setSelectedPropertyStatuses] = useState(
     searchParams.get('status') ? searchParams.get('status').split(',') : []
@@ -118,6 +119,7 @@ export const Gallery = () => {
               bhkType: Array.isArray(product.bhkType)
                 ? product.bhkType
                 : (product.bhkType ? [product.bhkType] : []),
+              plotStatus: product.plotStatus || "",
               hasVoiceOver: !!product.hasVoiceOver,
               viewMode: product.viewMode || "Day",
             };
@@ -166,7 +168,7 @@ export const Gallery = () => {
     if (data.length > 0) {
       filterData(searchQuery, selectedPropertyStatuses, selectedPropertyTypes, selectedAreas);
     }
-  }, [data, searchQuery, selectedPropertyStatuses, selectedPropertyTypes, selectedAreas, selectedBHK, voiceOverOnly, selectedViewMode]);
+  }, [data, searchQuery, selectedPropertyStatuses, selectedPropertyTypes, selectedAreas, selectedBHKs, voiceOverOnly, selectedViewModes, selectedPlotStatuses]);
 
   const isMobile = windowWidth < 640;
 
@@ -197,18 +199,21 @@ export const Gallery = () => {
       );
     }
 
-    if (selectedBHK) {
-      filtered = filtered.filter((item) => Array.isArray(item.bhkType) && item.bhkType.includes(selectedBHK));
+    if (selectedBHKs.length > 0) {
+      filtered = filtered.filter((item) => Array.isArray(item.bhkType) && item.bhkType.some((t) => selectedBHKs.includes(t)));
     }
 
     if (voiceOverOnly) {
       filtered = filtered.filter((item) => item.hasVoiceOver === true);
     }
 
-    if (selectedViewMode) {
+    if (selectedViewModes.length > 0) {
       filtered = filtered.filter(
-        (item) => item.viewMode === selectedViewMode || item.viewMode === "Both"
+        (item) => selectedViewModes.includes(item.viewMode) || item.viewMode === "Both"
       );
+    }
+    if (selectedPlotStatuses.length > 0) {
+      filtered = filtered.filter((item) => selectedPlotStatuses.includes(item.plotStatus));
     }
 
     setFilteredData(filtered);
@@ -225,9 +230,10 @@ export const Gallery = () => {
     setSelectedPropertyStatuses([]);
     setSelectedPropertyTypes([]);
     setSelectedAreas([]);
-    setSelectedBHK("");
+    setSelectedBHKs([]);
     setVoiceOverOnly(false);
-    setSelectedViewMode("");
+    setSelectedViewModes([]);
+    setSelectedPlotStatuses([]);
     setFilteredData([...data]);
   };
 
@@ -601,53 +607,68 @@ export const Gallery = () => {
     // Always use getOptions() to ensure filtering logic is applied consistently
     const displayOptions = getOptions();
 
-    if (title === "Configuration") {
+    if (title === "Tag") {
+      const bhkOptions = ["2 BHK", "3 BHK", "3.5 BHK", "4 BHK", "5 BHK"];
+      const plotStatusOptions = ["Available", "Reserved", "Sold"];
+
+      const pillClass = (active) =>
+        `rounded-xl border px-4 py-2 text-sm ${active ? "border-[#86BA3A] text-[#86BA3A]" : "border-gray-600 text-gray-300"}`;
+
+      const toggleArrayValue = (setter, currentArray, value) => {
+        setter(
+          currentArray.includes(value)
+            ? currentArray.filter((v) => v !== value)
+            : [...currentArray, value]
+        );
+      };
+
       return (
         <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4" onClick={(e) => e.stopPropagation()}>
           <div className="bg-gray-900 rounded-xl max-w-md w-full border border-gray-700 shadow-2xl flex flex-col" style={{ maxHeight: '80vh' }}>
             <div className="bg-gray-900 p-4 border-b border-gray-800 flex justify-between items-center">
-              <h3 className="text-xl font-medium">Configuration</h3>
+              <h3 className="text-xl font-medium">Tag</h3>
               <button onClick={onClose} className="text-gray-400 hover:text-white">
                 <FiX size={24} />
               </button>
             </div>
-            <div className="overflow-y-auto p-4 space-y-4" style={{ maxHeight: '60vh' }}>
-              <div>
-                <label className="block text-sm text-gray-400 mb-2">BHK</label>
-                <select
-                  value={selectedBHK}
-                  onChange={(e) => setSelectedBHK(e.target.value)}
-                  className={`w-full rounded-xl border px-3 py-2 text-sm bg-transparent ${selectedBHK ? "border-[#86BA3A] text-[#86BA3A]" : "border-gray-600 text-gray-300"}`}
+            <div className="overflow-y-auto p-4" style={{ maxHeight: '60vh' }}>
+              <div className="flex flex-wrap gap-2">
+                {bhkOptions.map((option) => (
+                  <button
+                    key={option}
+                    onClick={() => toggleArrayValue(setSelectedBHKs, selectedBHKs, option)}
+                    className={pillClass(selectedBHKs.includes(option))}
+                  >
+                    {option}
+                  </button>
+                ))}
+                <button
+                  onClick={() => toggleArrayValue(setSelectedViewModes, selectedViewModes, "Day")}
+                  className={pillClass(selectedViewModes.includes("Day"))}
                 >
-                  <option value="" className="bg-black">All</option>
-                  <option value="2 BHK" className="bg-black">2 BHK</option>
-                  <option value="3 BHK" className="bg-black">3 BHK</option>
-                  <option value="3.5 BHK" className="bg-black">3.5 BHK</option>
-                  <option value="4 BHK" className="bg-black">4 BHK</option>
-                  <option value="5 BHK" className="bg-black">5 BHK</option>
-                </select>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-400">Voice Over</span>
+                  Day
+                </button>
+                <button
+                  onClick={() => toggleArrayValue(setSelectedViewModes, selectedViewModes, "Night")}
+                  className={pillClass(selectedViewModes.includes("Night"))}
+                >
+                  Night
+                </button>
                 <button
                   onClick={() => setVoiceOverOnly((v) => !v)}
-                  className={`rounded-xl border px-4 py-2 text-sm ${voiceOverOnly ? "border-[#86BA3A] text-[#86BA3A]" : "border-gray-600 text-gray-300"}`}
+                  className={pillClass(voiceOverOnly)}
                 >
-                  {voiceOverOnly ? "On" : "Off"}
+                  Voice Over
                 </button>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-400">Day / Night</span>
-                <button
-                  onClick={() =>
-                    setSelectedViewMode((v) =>
-                      v === "" ? "Day" : v === "Day" ? "Night" : ""
-                    )
-                  }
-                  className={`rounded-xl border px-4 py-2 text-sm ${selectedViewMode ? "border-[#86BA3A] text-[#86BA3A]" : "border-gray-600 text-gray-300"}`}
-                >
-                  {selectedViewMode || "All"}
-                </button>
+                {plotStatusOptions.map((option) => (
+                  <button
+                    key={option}
+                    onClick={() => toggleArrayValue(setSelectedPlotStatuses, selectedPlotStatuses, option)}
+                    className={pillClass(selectedPlotStatuses.includes(option))}
+                  >
+                    {option}
+                  </button>
+                ))}
               </div>
             </div>
           </div>
@@ -770,9 +791,9 @@ export const Gallery = () => {
                     />
                                         <FilterButton
                       icon={<FiSliders size={18} />}
-                      label="Configuration"
-                      onClick={() => handleDropdownClick("Configuration")}
-                      active={!!selectedBHK || voiceOverOnly || !!selectedViewMode}
+                      label="Tag"
+                      onClick={() => handleDropdownClick("Tag")}
+                      active={selectedBHKs.length > 0 || voiceOverOnly || selectedViewModes.length > 0 || selectedPlotStatuses.length > 0}
                       mobile
                     />
                     <button
@@ -834,9 +855,9 @@ export const Gallery = () => {
                 />
                                 <FilterButton
                   icon={<FiSliders size={16} />}
-                  label="Configuration"
-                  onClick={() => handleDropdownClick("Configuration")}
-                  active={!!selectedBHK || voiceOverOnly || !!selectedViewMode}
+                  label="Tag"
+                  onClick={() => handleDropdownClick("Tag")}
+                  active={selectedBHKs.length > 0 || voiceOverOnly || selectedViewModes.length > 0 || selectedPlotStatuses.length > 0}
                 />
               </div>
             </div>
