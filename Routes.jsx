@@ -12,6 +12,7 @@ import { GalleryViewer } from './src/components/virtualTour/VirtualTourViewer';
 import Blog from "./src/pages/Blog/Blog";
 import BlogDetail from "./src/pages/Blog/BlogDetail";
 import ClientAccessPage from "./src/pages/ClientAccess/ClientAccessPage";
+import Careers from "./src/pages/Careers/Careers";
  
 
 export const router = createBrowserRouter([
@@ -69,6 +70,11 @@ export const router = createBrowserRouter([
         path: "blog/:slug",
         element: <BlogDetail/>,
         id: "11",
+      },
+      {
+        path: "careers",
+        element: <Careers/>,
+        id: "careers",
       },
       {
         path: ":slug",
