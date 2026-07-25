@@ -84,7 +84,7 @@ function Main() {
         <div className="w-full h-[9.2svh] flex-none"></div>
         
         {/* Main Content */}
-        <div className="flex-1 w-full">
+        <div className="flex-1 w-full overflow-y-auto">
           <Outlet context=" "/>
         </div>
       </div>
