@@ -25,7 +25,7 @@ const Careers = () => {
   };
 
   return (
-    <div className="w-full min-h-screen bg-black text-white py-16 px-4 sm:px-8 lg:px-[10vw]">
+    <div className="w-full h-full overflow-y-auto bg-black text-white py-16 px-4 sm:px-8 lg:px-[10vw]">
       {/* Hero */}
       <div className="text-center max-w-3xl mx-auto">
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight">
