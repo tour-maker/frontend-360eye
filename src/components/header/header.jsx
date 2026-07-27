@@ -572,6 +572,13 @@ function Header({ css }) {
             >
               BLOG
             </NavLink>
+            <NavLink
+              to="/careers"
+              className={({isActive}) => `text-base hover:text-[#87BA3A] transition-colors ${isActive ? "text-[#87BA3A]" : ""}`}
+              onClick={closeAll}
+            >
+              CAREERS
+            </NavLink>
             <NavLink 
               to="/aboutus" 
               className={({isActive}) => `text-base hover:text-[#87BA3A] transition-colors ${isActive ? "text-[#87BA3A]" : ""}`}
