@@ -235,19 +235,6 @@ function Home() {
             </a>
           </div>
         </section>
-
-        <section 
-            ref={(ref) => setSectionRef(ref, 3)}
-            className="snap-start flex flex-col bg-black h-[calc(100svh-9.2svh)] justify-between pt-2"
-          >
-
-          <ModelComp
-            css="w-full h-full"
-            title="3D ArchViz Rendering"
-            description="Visualize your architectural projects with photorealistic 3D renderings and immersive virtual environments"
-            buttonText="View Portfolio"
-            buttonLink="/3darchvizrendering"
-            model="/homepage/3D Archviz_comp.mp4"
           />
         </section>
 
@@ -262,6 +249,19 @@ function Home() {
             css="w-full h-full"
             title="Video Production"
             description="Tell your brand's story through engaging and high-quality Video Production. [ Promotional Property Film , Corporate Ad-Film , 360° VR Video ]"
+
+        <section 
+            ref={(ref) => setSectionRef(ref, 3)}
+            className="snap-start flex flex-col bg-black h-[calc(100svh-9.2svh)] justify-between pt-2"
+          >
+
+          <ModelComp
+            css="w-full h-full"
+            title="3D ArchViz Rendering"
+            description="Visualize your architectural projects with photorealistic 3D renderings and immersive virtual environments"
+            buttonText="View Portfolio"
+            buttonLink="/3darchvizrendering"
+            model="/homepage/3D Archviz_comp.mp4"
             buttonText="View Gallery"
             buttonLink="/commercialflims"
             model="/homepage/Commercial Films_comp.mp4"
