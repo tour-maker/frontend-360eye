@@ -2,6 +2,21 @@ import { useEffect, useState } from "react";
 import { fetchOpenRoles, fetchCareerSettings } from "../../services/careerService";
 import ApplicationModal from "./ApplicationModal";
 
+const FALLBACK_IMAGES = [
+  { match: /3d|architect|visualiz/i, url: "https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=600&q=80" },
+  { match: /photo/i, url: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=600&q=80" },
+  { match: /video/i, url: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=600&q=80" },
+  { match: /web|develop/i, url: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=600&q=80" },
+  { match: /graphic|ui|design/i, url: "https://images.unsplash.com/photo-1626785774573-4b799315345d?w=600&q=80" },
+  { match: /project|manager/i, url: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&q=80" },
+  { match: /sales|business|development/i, url: "https://images.unsplash.com/photo-1552581234-26160f608093?w=600&q=80" },
+];
+
+const getFallbackImage = (title = "") => {
+  const found = FALLBACK_IMAGES.find((f) => f.match.test(title));
+  return found ? found.url : "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&q=80";
+};
+
 const Careers = () => {
   const [roles, setRoles] = useState([]);
   const [settings, setSettings] = useState(null);
@@ -69,7 +84,7 @@ const Careers = () => {
         ) : roles.length === 0 ? (
           <p className="text-center text-gray-500">No open roles right now. Check back soon.</p>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {roles.map((role, i) => (
               <button
                 key={role._id}
@@ -77,13 +92,7 @@ const Careers = () => {
                 className="text-left border border-gray-800 rounded-lg overflow-hidden hover:border-[#86BA3A] transition-colors group"
               >
                 <div className="relative h-40 bg-gray-900 overflow-hidden">
-                  {role.image ? (
-                    <img src={role.image} alt={role.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-900 to-black">
-                      <span className="font-mono text-4xl text-gray-700">{(i + 1).toString().padStart(2, "0")}</span>
-                    </div>
-                  )}
+                  <img src={role.image || getFallbackImage(role.title)} alt={role.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                   <span className="absolute top-3 left-3 font-mono text-xs text-[#86BA3A] bg-black/70 px-2 py-1 rounded">{(i + 1).toString().padStart(2, "0")}</span>
                 </div>
                 <div className="p-4 flex items-center justify-between">
