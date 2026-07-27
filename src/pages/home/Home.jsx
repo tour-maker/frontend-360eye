@@ -106,16 +106,21 @@ function Home() {
   // Handle scroll events
   const handleScroll = () => {
     if (!containerRef.current) return;
-
     const container = containerRef.current;
     const scrollPosition = container.scrollTop + (container.clientHeight / 2);
-
+    let closestIndex = 0;
+    let closestDistance = Infinity;
     sectionRefs.current.forEach((ref, index) => {
-      if (ref && ref.offsetTop <= scrollPosition && 
-          ref.offsetTop + ref.offsetHeight > scrollPosition) {
-        setActiveSection(index);
+      if (!ref) return;
+      if (ref.offsetTop <= scrollPosition) {
+        const distance = scrollPosition - ref.offsetTop;
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestIndex = index;
+        }
       }
     });
+    setActiveSection(closestIndex);
   };
 
   // Handle dot clicks
