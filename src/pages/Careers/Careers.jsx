@@ -69,19 +69,30 @@ const Careers = () => {
         ) : roles.length === 0 ? (
           <p className="text-center text-gray-500">No open roles right now. Check back soon.</p>
         ) : (
-          <div className="border-t border-gray-800">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {roles.map((role, i) => (
               <button
                 key={role._id}
                 onClick={() => openApplyModal(role._id)}
-                className="w-full text-left border-b border-gray-800 px-2 py-5 hover:bg-white/[0.03] transition-colors flex items-center gap-6 group"
+                className="text-left border border-gray-800 rounded-lg overflow-hidden hover:border-[#86BA3A] transition-colors group"
               >
-                <span className="font-mono text-xs text-gray-600 w-8 flex-shrink-0">{(i + 1).toString().padStart(2, "0")}</span>
-                <div className="flex-1">
-                  <h3 className="text-lg font-medium group-hover:text-[#86BA3A] transition-colors">{role.title}</h3>
-                  {role.description && <p className="text-sm text-gray-500 mt-1 font-light">{role.description}</p>}
+                <div className="relative h-40 bg-gray-900 overflow-hidden">
+                  {role.image ? (
+                    <img src={role.image} alt={role.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-900 to-black">
+                      <span className="font-mono text-4xl text-gray-700">{(i + 1).toString().padStart(2, "0")}</span>
+                    </div>
+                  )}
+                  <span className="absolute top-3 left-3 font-mono text-xs text-[#86BA3A] bg-black/70 px-2 py-1 rounded">{(i + 1).toString().padStart(2, "0")}</span>
                 </div>
-                <span className="text-gray-600 group-hover:text-[#86BA3A] group-hover:translate-x-1 transition-all duration-200 text-xl">→</span>
+                <div className="p-4 flex items-center justify-between">
+                  <div>
+                    <h3 className="text-base font-medium group-hover:text-[#86BA3A] transition-colors">{role.title}</h3>
+                    {role.description && <p className="text-xs text-gray-500 mt-1 font-light">{role.description}</p>}
+                  </div>
+                  <span className="text-gray-600 group-hover:text-[#86BA3A] group-hover:translate-x-1 transition-all duration-200 text-xl flex-shrink-0 ml-2">→</span>
+                </div>
               </button>
             ))}
           </div>
