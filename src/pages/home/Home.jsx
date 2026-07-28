@@ -3,7 +3,6 @@ import { useOutletContext } from "react-router-dom";
 import VideoPlayer from "../../components/videoPlayer/VideoPlayer";
 import ModelComp from "../../components/modelComp/ModelComp";
 import Clients from "../../components/Clients/Clients";
-import Partners from "../../components/Partners/Partners";
 import MapContactUs from "../../components/contactUs/MapComponent";
 import "./Home.css";
 import play from "../../assets/playbutton.svg";
@@ -269,7 +268,6 @@ function Home() {
           className="snap-start flex h-[calc(100svh-9.2svh)] pt-2 overflow-hidden"
         >
           <Clients css="w-full h-full pb-10 sm:pb-8 md:pb-6" />
-          <Partners />
         </section>
 
 

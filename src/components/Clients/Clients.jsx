@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { fetchClientLogos, removeDuplicateLogos, getLogoImageUrl } from './clientsApi';
 import './clients.css';
+import Partners from '../Partners/Partners';
 
 const Clients = ({ css }) => {
   const [sliders, setSliders] = useState([]);
@@ -141,6 +142,7 @@ const Clients = ({ css }) => {
       </div>
 
         </div>
+        <Partners />
         <div className="w-full flex justify-center items-center pb-4">
           <a href="/aboutus" className="text-center inline-flex items-center justify-center h-10 px-6 bg-black rounded-lg text-gray-200 hover:text-white transition-colors duration-200 shadow-md">
             <span className="text-[#87BA3A] mr-1 text-center">Read more</span> About Us
