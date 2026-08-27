@@ -320,7 +320,7 @@ function Header({ css }) {
                         </AnimatePresence>
                       </motion.li>
 
-		      {/* Blog Menu Item */}
+		      {/* Blog Menu Item - HIDDEN ON PRODUCTION
                       <motion.li
                         variants={{
                           hidden: { opacity: 0, x: -20 },
@@ -336,7 +336,7 @@ function Header({ css }) {
                             <span className="ml-2">Blog</span>
                           </Link>
                         </motion.div>
-                      </motion.li>	
+                      </motion.li> */}	
                       
                       {/* About Us Menu Item */}
                       <motion.li
@@ -565,7 +565,7 @@ function Header({ css }) {
               </AnimatePresence>
             </div>
 
-            <NavLink
+            {/* <NavLink
               to="/blog"
               className={({isActive}) => `text-base hover:text-[#87BA3A] transition-colors ${isActive ? "text-[#87BA3A]" : ""}`}
               onClick={closeAll}
@@ -578,7 +578,7 @@ function Header({ css }) {
               onClick={closeAll}
             >
               CAREERS
-            </NavLink>
+            </NavLink> */}
             <NavLink 
               to="/aboutus" 
               className={({isActive}) => `text-base hover:text-[#87BA3A] transition-colors ${isActive ? "text-[#87BA3A]" : ""}`}

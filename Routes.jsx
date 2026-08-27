@@ -9,10 +9,10 @@ import { CommercialFlims } from "./src/pages/Commercials/CommercialFlims";
 import { CommercialPhotography } from "./src/pages/Commercials/CommercialPhotography";
 import { AlbumImages } from "./src/pages/Commercials/AlbumImages";
 import { GalleryViewer } from './src/components/virtualTour/VirtualTourViewer';
-import Blog from "./src/pages/Blog/Blog";
-import BlogDetail from "./src/pages/Blog/BlogDetail";
+// import Blog from "./src/pages/Blog/Blog";
+// import BlogDetail from "./src/pages/Blog/BlogDetail";
 import ClientAccessPage from "./src/pages/ClientAccess/ClientAccessPage";
-import Careers from "./src/pages/Careers/Careers";
+// import Careers from "./src/pages/Careers/Careers";
  
 
 export const router = createBrowserRouter([
@@ -61,7 +61,7 @@ export const router = createBrowserRouter([
         element: <AlbumImages/>,
         id: "9",
       },
-      {
+      /* {
         path: "blog",
         element: <Blog/>,
         id: "10",
@@ -75,7 +75,7 @@ export const router = createBrowserRouter([
         path: "careers",
         element: <Careers/>,
         id: "careers",
-      },
+      }, */
       {
         path: ":slug",
         element: <ClientAccessPage/>,
