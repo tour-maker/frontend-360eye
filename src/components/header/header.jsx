@@ -336,8 +336,23 @@ function Header({ css }) {
                             <span className="ml-2">Blog</span>
                           </Link>
                         </motion.div>
-                      </motion.li> */}	
-                      
+                      </motion.li> */}
+                      <motion.li
+                        variants={{
+                          hidden: { opacity: 0, x: -20 },
+                          visible: { opacity: 1, x: 0 }
+                        }}
+                      >
+                        <motion.div whileHover={{ x: 3 }} transition={{ type: "spring", stiffness: 400, damping: 15 }}>
+                          <Link
+                            to="/careers"
+                            className={`flex items-center py-1 text-lg font-light tracking-wide ${location.pathname.includes("careers") ? "text-[#87BA3A]" : "text-white hover:text-[#87BA3A]"}`}
+                            onClick={closeAll}
+                          >
+                            <span className="ml-2">Careers</span>
+                          </Link>
+                        </motion.div>
+                      </motion.li>
                       {/* About Us Menu Item */}
                       <motion.li
                         variants={{
