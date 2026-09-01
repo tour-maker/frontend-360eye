@@ -120,6 +120,18 @@ const ApplicationModal = ({ roles, preselectedRoleId, onClose }) => {
                       onChange={(e) => handleFileChange(q.label, e.target.files[0])}
                       className="w-full text-sm text-gray-300 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-[#86BA3A]/20 file:text-[#86BA3A]"
                     />
+                  ) : q.fieldType === "select" ? (
+                    <select
+                      required={q.required}
+                      value={answers[q.label] || ""}
+                      onChange={(e) => handleTextChange(q.label, e.target.value)}
+                      className="w-full rounded-lg border border-gray-600 bg-gray-800 text-white px-3 py-2 text-sm focus:border-[#86BA3A] focus:outline-none"
+                    >
+                      <option value="">Select an option</option>
+                      {(q.options || []).map((opt) => (
+                        <option key={opt} value={opt}>{opt}</option>
+                      ))}
+                    </select>
                   ) : (
                     <input
                       type={q.fieldType === "email" ? "email" : q.fieldType === "phone" ? "tel" : q.fieldType === "url" ? "url" : "text"}
