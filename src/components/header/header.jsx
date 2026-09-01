@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
-import { FaBars, FaTimes, FaFolderOpen, FaFolder, FaChevronRight, FaHome, FaEye, FaInfoCircle, FaEnvelope } from "react-icons/fa";
+import { FaBars, FaTimes, FaFolderOpen, FaFolder, FaChevronRight, FaHome, FaEye, FaInfoCircle, FaEnvelope, FaBriefcase } from "react-icons/fa";
 import { HiOutlinePhotograph, HiOutlineCube, HiOutlineFilm } from "react-icons/hi";
 import { motion, AnimatePresence } from "framer-motion";
 import "./header-shadow.css";
@@ -349,6 +349,9 @@ function Header({ css }) {
                             className={`flex items-center py-1 text-lg font-light tracking-wide ${location.pathname.includes("careers") ? "text-[#87BA3A]" : "text-white hover:text-[#87BA3A]"}`}
                             onClick={closeAll}
                           >
+                            <motion.div whileHover={{ rotate: 10 }} transition={{ type: "spring", stiffness: 300 }}>
+                              <FaBriefcase size={16} className={location.pathname.includes("careers") ? "text-[#87BA3A]" : "text-white"} />
+                            </motion.div>
                             <span className="ml-2">Careers</span>
                           </Link>
                         </motion.div>
