@@ -83,6 +83,22 @@ const ApplicationModal = ({ roles, preselectedRoleId, onClose }) => {
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
+              {!preselectedRoleId && (
+                <div>
+                  <label className="block text-sm text-gray-300 mb-1">Position Applying For *</label>
+                  <select
+                    value={selectedRoleId}
+                    onChange={(e) => setSelectedRoleId(e.target.value)}
+                    required
+                    className="w-full rounded-lg border border-gray-600 bg-gray-800 text-white px-3 py-2 text-sm focus:border-[#86BA3A] focus:outline-none"
+                  >
+                    <option value="">Select a role</option>
+                    {roles.map((r) => (
+                      <option key={r._id} value={r._id}>{r.title}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
 
 
               {questions.map((q) => (
