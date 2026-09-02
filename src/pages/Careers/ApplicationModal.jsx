@@ -15,8 +15,15 @@ const ApplicationModal = ({ roles, preselectedRoleId, onClose }) => {
     : [];
 
   useEffect(() => {
-    setAnswers({});
     setFiles({});
+    if (selectedRole) {
+      const profileQuestion = (selectedRole.questions || []).find((q) => /which profile/i.test(q.label));
+      if (profileQuestion) {
+        setAnswers({ [profileQuestion.label]: selectedRole.title });
+        return;
+      }
+    }
+    setAnswers({});
   }, [selectedRoleId]);
 
   const handleTextChange = (label, value) => {
