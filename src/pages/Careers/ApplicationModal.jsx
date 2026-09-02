@@ -13,6 +13,7 @@ const ApplicationModal = ({ roles, preselectedRoleId, onClose }) => {
   const questions = selectedRole
     ? [...(selectedRole.questions || [])].sort((a, b) => a.questionOrder - b.questionOrder)
     : [];
+  const renderedQuestions = questions.filter((q) => !/which profile/i.test(q.label));
 
   useEffect(() => {
     setFiles({});
@@ -108,7 +109,7 @@ const ApplicationModal = ({ roles, preselectedRoleId, onClose }) => {
               )}
 
 
-              {questions.map((q) => (
+              {renderedQuestions.map((q) => (
                 <div key={q.label}>
                   <label className="block text-sm text-gray-300 mb-1">
                     {q.label} {q.required && "*"}
