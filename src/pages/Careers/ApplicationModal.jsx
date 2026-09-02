@@ -83,10 +83,7 @@ const ApplicationModal = ({ roles, preselectedRoleId, onClose }) => {
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm text-gray-300 mb-1">Position Applying For</label>
-                <p className="text-white font-medium">{selectedRole?.title || "No role selected"}</p>
-              </div>
+
 
               {questions.map((q) => (
                 <div key={q.label}>
