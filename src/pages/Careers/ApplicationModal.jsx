@@ -109,7 +109,7 @@ const ApplicationModal = ({ roles, preselectedRoleId, onClose }) => {
               )}
 
 
-              {renderedQuestions.map((q) => (
+              {questions.map((q) => (
                 <div key={q.label}>
                   <label className="block text-sm text-gray-300 mb-1">
                     {q.label} {q.required && "*"}
