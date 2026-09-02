@@ -91,7 +91,7 @@ const ApplicationModal = ({ roles, preselectedRoleId, onClose }) => {
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
-              {!preselectedRoleId && (
+              {!selectedRoleId && (
                 <div>
                   <label className="block text-sm text-gray-300 mb-1">Position Applying For *</label>
                   <select
