@@ -10,6 +10,7 @@ const FALLBACK_IMAGES = [
   { match: /graphic|ui|design/i, url: "https://images.unsplash.com/photo-1626785774573-4b799315345d?w=600&q=80" },
   { match: /project|manager/i, url: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&q=80" },
   { match: /sales|business|development/i, url: "https://images.unsplash.com/photo-1552581234-26160f608093?w=600&q=80" },
+  { match: /social|media/i, url: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=600&q=80" },
 ];
 
 const getFallbackImage = (title = "") => {
@@ -52,7 +53,7 @@ const Careers = () => {
         <div className="text-center px-6">
           <p className="uppercase tracking-[0.3em] text-xs text-[#86BA3A] mb-6 font-mono">Now Focusing On Talent</p>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold leading-[1.05] tracking-tight">
-            {settings?.tagline || "We don't just fill roles, we recruit obsessives."}
+            {settings?.tagline || "Join the team that makes spaces convincing before anyone steps inside"}
           </h1>
           <p className="mt-6 text-gray-400 text-base sm:text-lg max-w-xl mx-auto font-light">
             {settings?.subline || "360EYE specializes in immersive virtual tours, 3D visualization, and real estate marketing technology."}
@@ -84,7 +85,7 @@ const Careers = () => {
         ) : roles.length === 0 ? (
           <p className="text-center text-gray-500">No open roles right now. Check back soon.</p>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
             {roles.map((role, i) => (
               <button
                 key={role._id}
