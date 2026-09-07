@@ -19,6 +19,18 @@ const getIcon = (title = "") => {
   return found ? found.icon : ICON_MAP[0].icon;
 };
 
+const CARD_TINTS = [
+  "radial-gradient(circle at 30% 20%, #2a3a1c, #141a0e 70%)",
+  "radial-gradient(circle at 70% 20%, #1c2e33, #0e161a 70%)",
+  "radial-gradient(circle at 30% 70%, #332a1c, #1a150e 70%)",
+  "radial-gradient(circle at 60% 40%, #331c26, #1a0e14 70%)",
+  "radial-gradient(circle at 40% 30%, #2c1c33, #16121a 70%)",
+  "radial-gradient(circle at 50% 50%, #1c3033, #0e181a 70%)",
+  "radial-gradient(circle at 30% 60%, #33291c, #1a140e 70%)",
+  "radial-gradient(circle at 60% 30%, #331c1c, #1a0e0e 70%)",
+  "radial-gradient(circle at 40% 40%, #1c2c33, #0e161a 70%)",
+];
+
 const Careers = () => {
   const [roles, setRoles] = useState([]);
   const [settings, setSettings] = useState(null);
@@ -71,7 +83,8 @@ const Careers = () => {
               <button
                 key={role._id}
                 onClick={() => openApplyModal(role._id)}
-                className="text-left rounded-lg overflow-hidden relative bg-[#111] border border-[#232320] hover:border-[#86BA3A] transition-colors aspect-square flex flex-col items-center justify-center p-3 group"
+                className="text-left rounded-lg overflow-hidden relative border border-[#232320] hover:border-[#86BA3A] transition-colors aspect-square flex flex-col items-center justify-center p-3 group"
+                style={{ background: CARD_TINTS[i % CARD_TINTS.length] }}
               >
                 <span className="absolute top-2 left-2 font-mono text-[9px] text-[#3a3a36]">{(i + 1).toString().padStart(2, "0")}</span>
                 <img
