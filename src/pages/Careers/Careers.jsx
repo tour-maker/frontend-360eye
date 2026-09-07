@@ -90,7 +90,7 @@ const Careers = () => {
                 <img
                   src={role.iconUrl || getIcon(role.title)}
                   alt=""
-                  className="w-10 h-10 sm:w-12 sm:h-12 mb-2.5 opacity-90 group-hover:opacity-100 transition-opacity"
+                  className="w-12 h-12 sm:w-16 sm:h-16 mb-2.5 opacity-90 group-hover:opacity-100 transition-opacity"
                 />
                 <p className="text-[11px] sm:text-[12px] font-semibold leading-tight text-center group-hover:text-[#86BA3A] transition-colors">
                   {role.title}
