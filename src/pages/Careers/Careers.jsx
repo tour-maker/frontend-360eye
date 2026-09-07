@@ -2,34 +2,151 @@ import { useEffect, useState } from "react";
 import { fetchOpenRoles, fetchCareerSettings } from "../../services/careerService";
 import ApplicationModal from "./ApplicationModal";
 
-const ICON_MAP = [
-  { match: /3d.*architect|3d.*visualiz.*artist/i, icon: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0Ij4KPHBvbHlnb24gcG9pbnRzPSIzMiw0IDU0LDE3IDU0LDQ3IDMyLDYwIDEwLDQ3IDEwLDE3IiBmaWxsPSJub25lIiBzdHJva2U9IiM3MGExM2QiIHN0cm9rZS13aWR0aD0iMS41Ii8+CjxwYXRoIGQ9Ik0yMiAzOCBMMjIgMjYgTDMyIDIwIEw0MiAyNiBMNDIgMzggTDMyIDQ0IFoiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzcwYTEzZCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjxwYXRoIGQ9Ik0yMiAyNiBMMzIgMzIgTDQyIDI2IE0zMiAzMiBMMzIgNDQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzcwYTEzZCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPg==" },
-  { match: /3d.*design|3d.*visualiz.*manager/i, icon: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0Ij4KPHBvbHlnb24gcG9pbnRzPSIzMiw0IDU0LDE3IDU0LDQ3IDMyLDYwIDEwLDQ3IDEwLDE3IiBmaWxsPSJub25lIiBzdHJva2U9IiM3MGExM2QiIHN0cm9rZS13aWR0aD0iMS41Ii8+CjxyZWN0IHg9IjIwIiB5PSIyMiIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBzdHJva2U9IiM3MGExM2QiIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ibm9uZSIvPgo8cmVjdCB4PSIzNCIgeT0iMjIiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgc3Ryb2tlPSIjNzBhMTNkIiBzdHJva2Utd2lkdGg9IjIiIGZpbGw9Im5vbmUiLz4KPHBhdGggZD0iTTI1IDMyIEwyNSAzOCBMMzkgMzggTDM5IDMyIiBzdHJva2U9IiM3MGExM2QiIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ibm9uZSIvPgo8L3N2Zz4=" },
-  { match: /project.*manager/i, icon: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0Ij4KPHBvbHlnb24gcG9pbnRzPSIzMiw0IDU0LDE3IDU0LDQ3IDMyLDYwIDEwLDQ3IDEwLDE3IiBmaWxsPSJub25lIiBzdHJva2U9IiM3MGExM2QiIHN0cm9rZS13aWR0aD0iMS41Ii8+CjxwYXRoIGQ9Ik0xOCAyNCBMNDYgMjQgTTE4IDMyIEwzOCAzMiBNMTggNDAgTDQyIDQwIiBzdHJva2U9IiM3MGExM2QiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CjxwYXRoIGQ9Ik00MCAzOCBMNDQgNDIgTDQ4IDM0IiBzdHJva2U9IiM3MGExM2QiIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPg==" },
-  { match: /business|sales|development/i, icon: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0Ij4KPHBvbHlnb24gcG9pbnRzPSIzMiw0IDU0LDE3IDU0LDQ3IDMyLDYwIDEwLDQ3IDEwLDE3IiBmaWxsPSJub25lIiBzdHJva2U9IiM3MGExM2QiIHN0cm9rZS13aWR0aD0iMS41Ii8+CjxjaXJjbGUgY3g9IjI0IiBjeT0iMjYiIHI9IjUiIHN0cm9rZT0iIzcwYTEzZCIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSJub25lIi8+CjxjaXJjbGUgY3g9IjQwIiBjeT0iMzgiIHI9IjUiIHN0cm9rZT0iIzcwYTEzZCIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSJub25lIi8+CjxwYXRoIGQ9Ik0yOCAzMCBMMzYgMzQiIHN0cm9rZT0iIzcwYTEzZCIgc3Ryb2tlLXdpZHRoPSIyIi8+CjxwYXRoIGQ9Ik0yMCA0MCBMMjQgNDQiIHN0cm9rZT0iIzcwYTEzZCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPC9zdmc+" },
-  { match: /photo/i, icon: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0Ij4KPHBvbHlnb24gcG9pbnRzPSIzMiw0IDU0LDE3IDU0LDQ3IDMyLDYwIDEwLDQ3IDEwLDE3IiBmaWxsPSJub25lIiBzdHJva2U9IiM3MGExM2QiIHN0cm9rZS13aWR0aD0iMS41Ii8+CjxjaXJjbGUgY3g9IjMyIiBjeT0iMzIiIHI9IjkiIHN0cm9rZT0iIzcwYTEzZCIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSJub25lIi8+CjxjaXJjbGUgY3g9IjMyIiBjeT0iMzIiIHI9IjQiIGZpbGw9IiM3MGExM2QiLz4KPHBhdGggZD0iTTMyIDE5IEwzMiAxNSBNMzIgNDUgTDMyIDQ5IiBzdHJva2U9IiM3MGExM2QiIHN0cm9rZS13aWR0aD0iMiIvPgo8L3N2Zz4=" },
-  { match: /video/i, icon: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0Ij4KPHBvbHlnb24gcG9pbnRzPSIzMiw0IDU0LDE3IDU0LDQ3IDMyLDYwIDEwLDQ3IDEwLDE3IiBmaWxsPSJub25lIiBzdHJva2U9IiM3MGExM2QiIHN0cm9rZS13aWR0aD0iMS41Ii8+Cjxwb2x5Z29uIHBvaW50cz0iMjYsMjIgMjYsNDIgNDIsMzIiIGZpbGw9IiM3MGExM2QiLz4KPC9zdmc+" },
-  { match: /web|develop/i, icon: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0Ij4KPHBvbHlnb24gcG9pbnRzPSIzMiw0IDU0LDE3IDU0LDQ3IDMyLDYwIDEwLDQ3IDEwLDE3IiBmaWxsPSJub25lIiBzdHJva2U9IiM3MGExM2QiIHN0cm9rZS13aWR0aD0iMS41Ii8+CjxwYXRoIGQ9Ik0yOCAyMiBMMjAgMzIgTDI4IDQyIE0zNiAyMiBMNDQgMzIgTDM2IDQyIiBzdHJva2U9IiM3MGExM2QiIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPg==" },
-  { match: /graphic|ui|visual.*design/i, icon: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0Ij4KPHBvbHlnb24gcG9pbnRzPSIzMiw0IDU0LDE3IDU0LDQ3IDMyLDYwIDEwLDQ3IDEwLDE3IiBmaWxsPSJub25lIiBzdHJva2U9IiM3MGExM2QiIHN0cm9rZS13aWR0aD0iMS41Ii8+CjxjaXJjbGUgY3g9IjI2IiBjeT0iMjQiIHI9IjQiIGZpbGw9IiM3MGExM2QiLz4KPGNpcmNsZSBjeD0iNDAiIGN5PSIzMCIgcj0iNCIgc3Ryb2tlPSIjNzBhMTNkIiBzdHJva2Utd2lkdGg9IjIiIGZpbGw9Im5vbmUiLz4KPGNpcmNsZSBjeD0iMjQiIGN5PSI0MCIgcj0iNCIgc3Ryb2tlPSIjNzBhMTNkIiBzdHJva2Utd2lkdGg9IjIiIGZpbGw9Im5vbmUiLz4KPHBhdGggZD0iTTI5IDI2IEwzNyAyOSBNMzcgMzIgTDI3IDM4IiBzdHJva2U9IiM3MGExM2QiIHN0cm9rZS13aWR0aD0iMS41Ii8+Cjwvc3ZnPg==" },
-  { match: /social|media/i, icon: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0Ij4KPHBvbHlnb24gcG9pbnRzPSIzMiw0IDU0LDE3IDU0LDQ3IDMyLDYwIDEwLDQ3IDEwLDE3IiBmaWxsPSJub25lIiBzdHJva2U9IiM3MGExM2QiIHN0cm9rZS13aWR0aD0iMS41Ii8+CjxjaXJjbGUgY3g9IjMyIiBjeT0iMzIiIHI9IjMiIGZpbGw9IiM3MGExM2QiLz4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMiIgcj0iMy41IiBzdHJva2U9IiM3MGExM2QiIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ibm9uZSIvPgo8Y2lyY2xlIGN4PSI0NCIgY3k9IjIyIiByPSIzLjUiIHN0cm9rZT0iIzcwYTEzZCIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSJub25lIi8+CjxjaXJjbGUgY3g9IjMyIiBjeT0iNDYiIHI9IjMuNSIgc3Ryb2tlPSIjNzBhMTNkIiBzdHJva2Utd2lkdGg9IjIiIGZpbGw9Im5vbmUiLz4KPHBhdGggZD0iTTMwIDMwIEwyMiAyNCBNMzQgMzAgTDQyIDI0IE0zMiAzNSBMMzIgNDMiIHN0cm9rZT0iIzcwYTEzZCIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KPC9zdmc+" },
-];
-
 const CARD_TINTS = [
-  "radial-gradient(circle at 30% 20%, #2a3a1c, #141a0e 70%)",
-  "radial-gradient(circle at 70% 20%, #1c2e33, #0e161a 70%)",
-  "radial-gradient(circle at 30% 70%, #332a1c, #1a150e 70%)",
-  "radial-gradient(circle at 60% 40%, #331c26, #1a0e14 70%)",
-  "radial-gradient(circle at 40% 30%, #2c1c33, #16121a 70%)",
-  "radial-gradient(circle at 50% 50%, #1c3033, #0e181a 70%)",
-  "radial-gradient(circle at 30% 60%, #33291c, #1a140e 70%)",
-  "radial-gradient(circle at 60% 30%, #331c1c, #1a0e0e 70%)",
-  "radial-gradient(circle at 40% 40%, #1c2c33, #0e161a 70%)",
+  "linear-gradient(135deg,#1a2e10,#0d1706)",
+  "linear-gradient(135deg,#1c2e33,#0e161a)",
+  "linear-gradient(135deg,#33291c,#1a140e)",
+  "linear-gradient(135deg,#331c1c,#1a0e0e)",
+  "linear-gradient(135deg,#221a13,#110d09)",
+  "linear-gradient(135deg,#331c26,#1a0e14)",
+  "linear-gradient(135deg,#12181d,#090c0e)",
+  "linear-gradient(135deg,#2c1c33,#16121a)",
+  "linear-gradient(135deg,#1c2c33,#0e161a)",
 ];
 
-const getIcon = (title = "") => {
-  const found = ICON_MAP.find((f) => f.match.test(title));
-  return found ? found.icon : ICON_MAP[0].icon;
+const ICONS = {
+  visualizer: (
+    <svg width="100%" height="100%" viewBox="0 0 52 52">
+      <rect x="6" y="6" width="40" height="30" rx="2" fill="none" stroke="#86BA3A" strokeWidth="1.6" />
+      <path className="anim-model3d" d="M16 30 L16 20 L26 15 L36 20 L36 30 L26 35 Z M16 20 L26 25 L36 20 M26 25 L26 35" fill="none" stroke="#86BA3A" strokeWidth="1.6" strokeLinejoin="round" />
+      <rect x="16" y="42" width="20" height="4" fill="#86BA3A" />
+    </svg>
+  ),
+  manager3d: (
+    <svg width="100%" height="100%" viewBox="0 0 52 52">
+      <rect x="6" y="10" width="14" height="10" fill="none" stroke="#86BA3A" strokeWidth="1.4" />
+      <rect x="22" y="10" width="14" height="10" fill="none" stroke="#86BA3A" strokeWidth="1.4" />
+      <rect x="6" y="24" width="14" height="10" fill="none" stroke="#86BA3A" strokeWidth="1.4" />
+      <rect x="22" y="24" width="14" height="10" fill="none" stroke="#86BA3A" strokeWidth="1.4" />
+      <rect className="anim-reviewscan" x="4" y="8" width="34" height="14" fill="none" stroke="#fff" strokeWidth="1.6" strokeDasharray="3 2" />
+    </svg>
+  ),
+  projectManager: (
+    <svg width="100%" height="100%" viewBox="0 0 52 52">
+      <path className="anim-check1" d="M8 14 L12 18 L20 10" fill="none" stroke="#86BA3A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M24 13 L44 13" stroke="#86BA3A" strokeWidth="1.6" />
+      <path className="anim-check2" d="M8 26 L12 30 L20 22" fill="none" stroke="#86BA3A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M24 25 L44 25" stroke="#86BA3A" strokeWidth="1.6" />
+      <path className="anim-check3" d="M8 38 L12 42 L20 34" fill="none" stroke="#86BA3A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M24 37 L44 37" stroke="#86BA3A" strokeWidth="1.6" />
+    </svg>
+  ),
+  bde: (
+    <svg width="100%" height="100%" viewBox="0 0 52 52">
+      <rect x="10" y="20" width="32" height="22" rx="2" fill="none" stroke="#86BA3A" strokeWidth="1.8" />
+      <path d="M18 20 L18 14 C18 12 19.5 10 22 10 L30 10 C32.5 10 34 12 34 14 L34 20" fill="none" stroke="#86BA3A" strokeWidth="1.8" />
+      <path d="M10 26 L42 26" stroke="#86BA3A" strokeWidth="1.4" />
+      <g className="anim-cashfloat">
+        <rect x="17" y="30" width="10" height="6" rx="1" fill="#86BA3A" opacity="0.85" />
+        <rect x="26" y="32" width="10" height="6" rx="1" fill="#86BA3A" />
+      </g>
+    </svg>
+  ),
+  photoEditor: (
+    <svg width="100%" height="100%" viewBox="0 0 52 52">
+      <rect x="6" y="8" width="30" height="26" fill="none" stroke="#86BA3A" strokeWidth="1.6" />
+      <path d="M6 26 L16 16 L24 22 L36 10" fill="none" stroke="#86BA3A" strokeWidth="1.4" opacity="0.5" />
+      <circle cx="16" cy="16" r="2.5" fill="#86BA3A" />
+      <g className="anim-cropframe">
+        <rect x="18" y="14" width="20" height="20" fill="none" stroke="#fff" strokeWidth="1.6" strokeDasharray="3 2" />
+      </g>
+    </svg>
+  ),
+  videoEditor: (
+    <svg width="100%" height="100%" viewBox="0 0 52 52">
+      <rect x="6" y="8" width="40" height="26" rx="2" fill="none" stroke="#86BA3A" strokeWidth="1.6" />
+      <polygon points="21,15 21,27 32,21" fill="#86BA3A" />
+      <rect x="6" y="38" width="14" height="4" fill="#86BA3A" />
+      <rect x="24" y="38" width="14" height="4" fill="#86BA3A" />
+      <rect x="6" y="45" width="6" height="6" fill="#86BA3A" />
+      <rect x="14" y="45" width="10" height="6" fill="#86BA3A" />
+      <rect x="26" y="45" width="8" height="6" fill="#86BA3A" />
+      <rect className="anim-playhead" x="9" y="36" width="2" height="18" fill="#fff" />
+    </svg>
+  ),
+  webDeveloper: (
+    <svg width="100%" height="100%" viewBox="0 0 52 52">
+      <rect x="6" y="6" width="40" height="30" rx="2" fill="none" stroke="#86BA3A" strokeWidth="1.6" />
+      <path className="anim-bracketl" d="M17 16 L11 21 L17 26" fill="none" stroke="#86BA3A" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+      <path className="anim-bracketr" d="M35 16 L41 21 L35 26" fill="none" stroke="#86BA3A" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+      <rect className="anim-cursorblink" x="24" y="16" width="2" height="10" fill="#86BA3A" />
+      <rect x="14" y="42" width="24" height="4" fill="#86BA3A" />
+    </svg>
+  ),
+  uiDesigner: (
+    <svg width="100%" height="100%" viewBox="0 0 52 52">
+      <rect x="6" y="6" width="40" height="30" rx="2" fill="none" stroke="#86BA3A" strokeWidth="1.6" />
+      <rect x="14" y="12" width="12" height="12" fill="none" stroke="#86BA3A" strokeWidth="1.4" />
+      <g className="anim-dragnode"><rect x="28" y="16" width="10" height="10" fill="#86BA3A" /></g>
+      <rect x="14" y="42" width="24" height="4" fill="#86BA3A" />
+    </svg>
+  ),
+  socialMedia: (
+    <svg width="100%" height="100%" viewBox="0 0 52 52">
+      <g className="anim-plat1"><rect x="6" y="6" width="16" height="16" rx="3" fill="#3b5998" /><text x="14" y="19" fontSize="13" fill="#fff" textAnchor="middle" fontWeight="bold">f</text></g>
+      <g className="anim-plat2"><rect x="30" y="6" width="16" height="16" rx="4" fill="#c13584" /><rect x="34" y="10" width="8" height="8" rx="2" fill="none" stroke="#fff" strokeWidth="1.3" /><circle cx="38" cy="14" r="2" fill="none" stroke="#fff" strokeWidth="1" /></g>
+      <g className="anim-plat3"><rect x="6" y="30" width="16" height="16" rx="3" fill="#ff0000" /><polygon points="12,34 12,42 20,38" fill="#fff" /></g>
+      <g className="anim-plat4"><rect x="30" y="30" width="16" height="16" rx="3" fill="#0077b5" /><text x="38" y="43" fontSize="11" fill="#fff" textAnchor="middle" fontWeight="bold">in</text></g>
+    </svg>
+  ),
 };
+
+const ICON_MAP = [
+  { match: /3d.*architect|3d.*visualiz.*artist/i, key: "visualizer" },
+  { match: /3d.*design|3d.*visualiz.*manager/i, key: "manager3d" },
+  { match: /project.*manager/i, key: "projectManager" },
+  { match: /business|sales|development/i, key: "bde" },
+  { match: /photo/i, key: "photoEditor" },
+  { match: /video/i, key: "videoEditor" },
+  { match: /web|develop/i, key: "webDeveloper" },
+  { match: /graphic|ui|visual.*design/i, key: "uiDesigner" },
+  { match: /social|media/i, key: "socialMedia" },
+];
+
+const getIconKey = (title = "") => {
+  const found = ICON_MAP.find((f) => f.match.test(title));
+  return found ? found.key : "visualizer";
+};
+
+const iconStyles = `
+@keyframes anim-spin3d { from { transform: rotateY(0deg) rotateX(8deg); } to { transform: rotateY(360deg) rotateX(8deg); } }
+@keyframes anim-scan { 0%,100% { transform: translateY(0); opacity: 1; } 50% { transform: translateY(16px); opacity: 0.6; } }
+@keyframes anim-checkoff { 0%,20% { stroke-dashoffset: 20; opacity: 0.3; } 40%,100% { stroke-dashoffset: 0; opacity: 1; } }
+@keyframes anim-cashbob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+@keyframes anim-cropslide { 0%,100% { transform: translateX(0); } 50% { transform: translateX(-8px); } }
+@keyframes anim-scrub { 0%,100% { transform: translateX(0); } 50% { transform: translateX(14px); } }
+@keyframes anim-blink { 0%,45% { opacity: 1; } 50%,95% { opacity: 0; } 100% { opacity: 1; } }
+@keyframes anim-bracket { 0%,100% { transform: translateX(0); } 50% { transform: translateX(3px); } }
+@keyframes anim-bracketrev { 0%,100% { transform: translateX(0); } 50% { transform: translateX(-3px); } }
+@keyframes anim-drag { 0%,100% { transform: translate(0,0); } 50% { transform: translate(4px,-4px); } }
+@keyframes anim-platform { 0%,20% { opacity: 1; transform: scale(1); } 25%,95% { opacity: 0.3; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1); } }
+.anim-model3d { animation: anim-spin3d 4s linear infinite; transform-style: preserve-3d; transform-origin: 26px 24px; }
+.anim-reviewscan { animation: anim-scan 2s ease-in-out infinite; }
+.anim-check1 { stroke-dasharray: 20; animation: anim-checkoff 2.4s ease-in-out infinite; }
+.anim-check2 { stroke-dasharray: 20; animation: anim-checkoff 2.4s ease-in-out infinite; animation-delay: 0.5s; }
+.anim-check3 { stroke-dasharray: 20; animation: anim-checkoff 2.4s ease-in-out infinite; animation-delay: 1s; }
+.anim-cashfloat { animation: anim-cashbob 2s ease-in-out infinite; }
+.anim-cropframe { animation: anim-cropslide 2.4s ease-in-out infinite; transform-origin: 26px 22px; }
+.anim-playhead { animation: anim-scrub 2.4s ease-in-out infinite; }
+.anim-cursorblink { animation: anim-blink 1.1s steps(1) infinite; }
+.anim-bracketl { animation: anim-bracket 1.8s ease-in-out infinite; }
+.anim-bracketr { animation: anim-bracketrev 1.8s ease-in-out infinite; }
+.anim-dragnode { animation: anim-drag 2.2s ease-in-out infinite; }
+.anim-plat1 { animation: anim-platform 4s ease-in-out infinite; }
+.anim-plat2 { animation: anim-platform 4s ease-in-out infinite; animation-delay: 1s; }
+.anim-plat3 { animation: anim-platform 4s ease-in-out infinite; animation-delay: 2s; }
+.anim-plat4 { animation: anim-platform 4s ease-in-out infinite; animation-delay: 3s; }
+`;
 
 const Careers = () => {
   const [roles, setRoles] = useState([]);
@@ -55,6 +172,7 @@ const Careers = () => {
 
   return (
     <div className="w-full bg-[#0a0a0a] text-white py-8 px-4 sm:px-8 lg:px-[6vw]">
+      <style>{iconStyles}</style>
       <div className="relative max-w-5xl mx-auto py-6 sm:py-7 px-6 sm:px-8">
         <span className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-[#86BA3A]"></span>
         <span className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-[#86BA3A]"></span>
@@ -86,11 +204,9 @@ const Careers = () => {
                 className="text-left rounded-lg overflow-hidden relative border border-[#232320] hover:border-[#86BA3A] transition-colors aspect-square flex flex-col items-center justify-center p-2"
                 style={{ background: CARD_TINTS[i % CARD_TINTS.length] }}
               >
-                <img
-                  src={role.iconUrl || getIcon(role.title)}
-                  alt=""
-                  className="w-10 h-10 sm:w-12 sm:h-12 mb-1.5"
-                />
+                <div className="w-10 h-10 sm:w-12 sm:h-12 mb-1.5">
+                  {ICONS[getIconKey(role.title)]}
+                </div>
                 <p className="text-[9px] sm:text-[10px] font-semibold leading-tight text-center">
                   {role.title}
                 </p>
