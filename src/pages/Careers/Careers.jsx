@@ -208,7 +208,7 @@ const Careers = () => {
                 className="text-left rounded-lg overflow-hidden relative border border-[#232320] hover:border-[#86BA3A] transition-colors aspect-square flex flex-col items-center justify-center p-2"
                 style={{ background: CARD_TINTS[i % CARD_TINTS.length] }}
               >
-                <div className="w-10 h-10 sm:w-12 sm:h-12 mb-1.5">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 mb-1.5">
                   {ICONS[getIconKey(role.title)]}
                 </div>
                 <p className="text-[9px] sm:text-[10px] font-semibold leading-tight text-center">
