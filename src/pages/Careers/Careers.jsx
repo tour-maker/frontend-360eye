@@ -2,21 +2,17 @@ import { useEffect, useState } from "react";
 import { fetchOpenRoles, fetchCareerSettings } from "../../services/careerService";
 import ApplicationModal from "./ApplicationModal";
 
-const FALLBACK_IMAGES = [
-  { match: /3d|architect|visualiz/i, url: "https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=600&q=80" },
-  { match: /photo/i, url: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=600&q=80" },
-  { match: /video/i, url: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=600&q=80" },
-  { match: /web|develop/i, url: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=600&q=80" },
-  { match: /graphic|ui|design/i, url: "https://images.unsplash.com/photo-1626785774573-4b799315345d?w=600&q=80" },
-  { match: /project|manager/i, url: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&q=80" },
-  { match: /sales|business|development/i, url: "https://images.unsplash.com/photo-1552581234-26160f608093?w=600&q=80" },
-  { match: /social|media/i, url: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=600&q=80" },
+const CARD_TINTS = [
+  "radial-gradient(circle at 30% 20%, #2a3a1c, #141a0e 70%)",
+  "radial-gradient(circle at 70% 20%, #1c2e33, #0e161a 70%)",
+  "radial-gradient(circle at 30% 70%, #332a1c, #1a150e 70%)",
+  "radial-gradient(circle at 60% 40%, #331c26, #1a0e14 70%)",
+  "radial-gradient(circle at 40% 30%, #2c1c33, #16121a 70%)",
+  "radial-gradient(circle at 50% 50%, #1c3033, #0e181a 70%)",
+  "radial-gradient(circle at 30% 60%, #33291c, #1a140e 70%)",
+  "radial-gradient(circle at 60% 30%, #331c1c, #1a0e0e 70%)",
+  "radial-gradient(circle at 40% 40%, #1c2c33, #0e161a 70%)",
 ];
-
-const getFallbackImage = (title = "") => {
-  const found = FALLBACK_IMAGES.find((f) => f.match.test(title));
-  return found ? found.url : "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&q=80";
-};
 
 const Careers = () => {
   const [roles, setRoles] = useState([]);
@@ -41,72 +37,66 @@ const Careers = () => {
   };
 
   return (
-    <div className="w-full bg-[#0a0a0a] text-white py-16 px-4 sm:px-8 lg:px-[10vw]">
-      {/* Hero — camera viewfinder framing */}
-      <div className="relative max-w-3xl mx-auto py-12 sm:py-20">
-        {/* corner brackets */}
-        <span className="absolute -top-2 -left-2 w-8 h-8 border-t-2 border-l-2 border-[#86BA3A]"></span>
-        <span className="absolute -top-2 -right-2 w-8 h-8 border-t-2 border-r-2 border-[#86BA3A]"></span>
-        <span className="absolute -bottom-2 -left-2 w-8 h-8 border-b-2 border-l-2 border-[#86BA3A]"></span>
-        <span className="absolute -bottom-2 -right-2 w-8 h-8 border-b-2 border-r-2 border-[#86BA3A]"></span>
+    <div className="w-full bg-[#0a0a0a] text-white py-12 px-4 sm:px-8 lg:px-[10vw]">
+      <div className="relative max-w-3xl mx-auto py-8 sm:py-11 px-5 sm:px-8">
+        {/* corner brackets — now wrap the whole section, hero through roles */}
+        <span className="absolute top-0 left-0 w-8 h-8 sm:w-9 sm:h-9 border-t-2 border-l-2 border-[#86BA3A]"></span>
+        <span className="absolute top-0 right-0 w-8 h-8 sm:w-9 sm:h-9 border-t-2 border-r-2 border-[#86BA3A]"></span>
+        <span className="absolute bottom-0 left-0 w-8 h-8 sm:w-9 sm:h-9 border-b-2 border-l-2 border-[#86BA3A]"></span>
+        <span className="absolute bottom-0 right-0 w-8 h-8 sm:w-9 sm:h-9 border-b-2 border-r-2 border-[#86BA3A]"></span>
 
-        <div className="text-center px-6">
-          <p className="uppercase tracking-[0.3em] text-xs text-[#86BA3A] mb-6 font-mono">Now Focusing On Talent</p>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold leading-[1.05] tracking-tight">
+        <div className="text-center pb-9 sm:pb-11">
+          <p className="uppercase tracking-[0.3em] text-[10px] sm:text-xs text-[#86BA3A] mb-5 font-mono">
+            {roles.length || 9} positions open
+          </p>
+          <h1 className="text-2xl sm:text-3xl font-bold leading-[1.2] tracking-tight max-w-xl mx-auto">
             {settings?.tagline || "Join the team that makes spaces convincing before anyone steps inside"}
           </h1>
-          <p className="mt-6 text-gray-400 text-base sm:text-lg max-w-xl mx-auto font-light">
+          <p className="mt-4 text-gray-400 text-sm font-light max-w-md mx-auto leading-relaxed">
             {settings?.subline || "360EYE specializes in immersive virtual tours, 3D visualization, and real estate marketing technology."}
           </p>
-          <button
-            onClick={() => openApplyModal(null)}
-            className="mt-10 border-2 border-[#86BA3A] text-[#86BA3A] px-10 py-3 font-mono uppercase text-sm tracking-widest hover:bg-[#86BA3A] hover:text-black transition-colors duration-200"
-          >
-            ● Apply Now
-          </button>
         </div>
-      </div>
 
-      {/* Divider — aperture-style */}
-      <div className="max-w-4xl mx-auto my-16 flex items-center gap-4">
-        <div className="flex-1 border-t border-gray-800"></div>
-        <div className="w-2 h-2 rounded-full border border-gray-700"></div>
-        <div className="flex-1 border-t border-gray-800"></div>
-      </div>
-
-      {/* Open Roles — film strip */}
-      <div className="max-w-3xl mx-auto pb-16">
-        <div className="flex items-baseline justify-between mb-8">
-          <h2 className="text-2xl font-bold tracking-tight">Open Roles</h2>
-          <span className="font-mono text-xs text-gray-500">{roles.length.toString().padStart(2, "0")} POSITIONS</span>
-        </div>
         {loading ? (
-          <p className="text-center text-gray-500">Loading roles...</p>
+          <p className="text-center text-gray-500 text-sm">Loading roles...</p>
         ) : roles.length === 0 ? (
-          <p className="text-center text-gray-500">No open roles right now. Check back soon.</p>
+          <p className="text-center text-gray-500 text-sm">No open roles right now. Check back soon.</p>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3.5">
             {roles.map((role, i) => (
               <button
                 key={role._id}
                 onClick={() => openApplyModal(role._id)}
-                className="text-left border border-gray-800 rounded-lg overflow-hidden hover:border-[#86BA3A] transition-colors group"
+                className="text-left rounded-lg overflow-hidden relative aspect-square group"
+                style={{ background: CARD_TINTS[i % CARD_TINTS.length] }}
               >
-                <div className="relative h-40 bg-gray-900 overflow-hidden">
-                  <img src={role.image || getFallbackImage(role.title)} alt={role.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                  <span className="absolute top-3 left-3 font-mono text-xs text-[#86BA3A] bg-black/70 px-2 py-1 rounded">{(i + 1).toString().padStart(2, "0")}</span>
-                </div>
-                <div className="p-4 flex items-center justify-between">
-                  <div>
-                    <h3 className="text-base font-medium group-hover:text-[#86BA3A] transition-colors">{role.title}</h3>
-                    {role.description && <p className="text-xs text-gray-500 mt-1 font-light">{role.description}</p>}
-                  </div>
-                  <span className="text-gray-600 group-hover:text-[#86BA3A] group-hover:translate-x-1 transition-all duration-200 text-xl flex-shrink-0 ml-2">→</span>
+                <span
+                  className="absolute -top-2 -left-0.5 font-serif font-bold leading-none pointer-events-none"
+                  style={{ fontSize: "clamp(34px,7vw,60px)", color: "rgba(255,255,255,0.07)" }}
+                >
+                  {(i + 1).toString().padStart(2, "0")}
+                </span>
+                <div
+                  className="absolute left-0 right-0 bottom-0 p-2.5 sm:p-3.5"
+                  style={{ background: "linear-gradient(transparent, rgba(0,0,0,0.85))" }}
+                >
+                  <p className="text-[11px] sm:text-[13px] font-bold leading-tight group-hover:text-[#86BA3A] transition-colors">
+                    {role.title}
+                  </p>
                 </div>
               </button>
             ))}
           </div>
         )}
+
+        <div className="text-center pt-9 sm:pt-11">
+          <button
+            onClick={() => openApplyModal(null)}
+            className="w-full sm:w-auto bg-[#86BA3A] text-black px-9 py-3 font-mono uppercase text-xs sm:text-[13px] tracking-widest rounded-sm font-semibold hover:bg-[#75a52f] transition-colors"
+          >
+            Apply now
+          </button>
+        </div>
       </div>
 
       {showModal && (
