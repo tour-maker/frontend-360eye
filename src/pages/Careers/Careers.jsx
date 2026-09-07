@@ -47,8 +47,10 @@ const ICONS = {
       <path d="M18 20 L18 14 C18 12 19.5 10 22 10 L30 10 C32.5 10 34 12 34 14 L34 20" fill="none" stroke="#86BA3A" strokeWidth="1.8" />
       <path d="M10 26 L42 26" stroke="#86BA3A" strokeWidth="1.4" />
       <g className="anim-cashfloat">
-        <rect x="17" y="30" width="10" height="6" rx="1" fill="#86BA3A" opacity="0.85" />
-        <rect x="26" y="32" width="10" height="6" rx="1" fill="#86BA3A" />
+        <rect x="15" y="30" width="11" height="7" rx="1" fill="#86BA3A" opacity="0.85" />
+        <text x="20.5" y="35.5" fontSize="6" fill="#0a0a0a" textAnchor="middle" fontWeight="bold">₹</text>
+        <rect x="25" y="32" width="11" height="7" rx="1" fill="#86BA3A" />
+        <text x="30.5" y="37.5" fontSize="6" fill="#0a0a0a" textAnchor="middle" fontWeight="bold">$</text>
       </g>
     </svg>
   ),
@@ -93,6 +95,8 @@ const ICONS = {
   ),
   socialMedia: (
     <svg width="100%" height="100%" viewBox="0 0 52 52">
+      <path d="M14 14 L38 14 M14 14 L14 38 M38 14 L38 38 M14 38 L38 38" stroke="#86BA3A" strokeWidth="1" opacity="0.3" />
+      <circle cx="26" cy="26" r="3" fill="#86BA3A" opacity="0.6" />
       <g className="anim-plat1"><rect x="6" y="6" width="16" height="16" rx="3" fill="#3b5998" /><text x="14" y="19" fontSize="13" fill="#fff" textAnchor="middle" fontWeight="bold">f</text></g>
       <g className="anim-plat2"><rect x="30" y="6" width="16" height="16" rx="4" fill="#c13584" /><rect x="34" y="10" width="8" height="8" rx="2" fill="none" stroke="#fff" strokeWidth="1.3" /><circle cx="38" cy="14" r="2" fill="none" stroke="#fff" strokeWidth="1" /></g>
       <g className="anim-plat3"><rect x="6" y="30" width="16" height="16" rx="3" fill="#ff0000" /><polygon points="12,34 12,42 20,38" fill="#fff" /></g>
@@ -183,10 +187,10 @@ const Careers = () => {
           <p className="uppercase tracking-[0.3em] text-[10px] text-[#86BA3A] mb-3 font-mono">
             {roles.length || 9} positions open
           </p>
-          <h1 className="text-xl sm:text-2xl font-bold leading-[1.25] tracking-tight max-w-xl mx-auto">
+          <h1 className="text-2xl sm:text-3xl font-bold leading-[1.25] tracking-tight max-w-2xl mx-auto">
             {settings?.tagline || "Join the team that makes spaces convincing before anyone steps inside"}
           </h1>
-          <p className="mt-3 text-gray-400 text-xs font-light max-w-md mx-auto leading-relaxed">
+          <p className="mt-3 text-gray-400 text-sm sm:text-base font-light max-w-lg mx-auto leading-relaxed">
             {settings?.subline || "360EYE specializes in immersive virtual tours, 3D visualization, and real estate marketing technology."}
           </p>
         </div>
