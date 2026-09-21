@@ -120,7 +120,7 @@ export const Gallery = () => {
                 : (product.bhkType ? [product.bhkType] : []),
               plotStatus: product.plotStatus || "",
               hasVoiceOver: !!product.hasVoiceOver,
-              viewMode: product.viewMode || "Day",
+              viewMode: product.viewMode || "",
             };
           });
           
@@ -620,7 +620,7 @@ export const Gallery = () => {
     const displayOptions = getOptions();
 
     if (title === "Tag") {
-      const bhkOptions = ["2 BHK", "3 BHK", "3.5 BHK", "4 BHK", "5 BHK"];
+      const bhkOptions = ["2 BHK", "3 BHK", "3.5 BHK", "4 BHK", "5 BHK", "Penthouse"];
       const toggleArrayValue = (setter, currentArray, value) => {
         setter(
           currentArray.includes(value)
