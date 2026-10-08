@@ -6,6 +6,8 @@ import {
   fetchPropertyStatus,
   fetchPropertyType,
   fetchAreas,
+  fetchFilters,
+  fetchLegacyFilterLabels,
 } from "../../services/galleryService";
 import { useSearchParams } from "react-router-dom";
 
@@ -30,6 +32,18 @@ export const Gallery = () => {
   const [selectedBHKs, setSelectedBHKs] = useState([]);
   const [voiceOverOnly, setVoiceOverOnly] = useState(false);
   const [selectedViewModes, setSelectedViewModes] = useState([]);
+  const [bhkOptions, setBhkOptions] = useState(["2 BHK", "3 BHK", "3.5 BHK", "4 BHK", "5 BHK", "Penthouse"]);
+  const [selectedFilterTags, setSelectedFilterTags] = useState({});
+  const [dynamicFilterGroups, setDynamicFilterGroups] = useState([]);
+  const [unitTypeGroupName, setUnitTypeGroupName] = useState("Unit Type");
+
+  const [legacyLabels, setLegacyLabels] = useState({});
+  useEffect(() => {
+    fetchLegacyFilterLabels().then(setLegacyLabels);
+  }, []);
+  const typeLabel = legacyLabels.propertyType || "Type";
+  const statusLabel = legacyLabels.propertyStatus || "3D/Photo";
+  const areaLabel = legacyLabels.area || "Area";
 
   const [selectedPropertyStatuses, setSelectedPropertyStatuses] = useState(
     searchParams.get('status') ? searchParams.get('status').split(',') : []
@@ -73,13 +87,41 @@ export const Gallery = () => {
     const fetchAllData = async () => {
       try {
         // Fetch products with a higher limit (300 instead of default 10)
-        const [productsResponse, statusResponse, typeResponseData, areasResponse] = 
+        const [productsResponse, statusResponse, typeResponseData, areasResponse, filtersResponse] =
           await Promise.all([
             fetchProducts("Virtual Tour", 1, 400), // Set page to 1, limit to 300
             fetchPropertyStatus(),
             fetchPropertyType(),
-            fetchAreas()
+            fetchAreas(),
+            fetchFilters().catch((err) => {
+              console.error("Error fetching dynamic BHK options, using fallback:", err);
+              return null;
+            })
           ]);
+
+        if (filtersResponse && Array.isArray(filtersResponse.filters)) {
+          const featuresFilter = filtersResponse.filters.find(
+            (f) => f.name && f.name.trim().toLowerCase() === "unit type"
+          );
+          if (featuresFilter && Array.isArray(featuresFilter.options)) {
+            const reserved = ["day", "night", "voice over", "plot status"];
+            const dynamicBhkOptions = featuresFilter.options.filter(
+              (opt) => !reserved.includes(String(opt).trim().toLowerCase())
+            );
+            if (dynamicBhkOptions.length > 0) {
+              setBhkOptions(dynamicBhkOptions);
+            }
+            if (featuresFilter.name) {
+              setUnitTypeGroupName(featuresFilter.name);
+            }
+          }
+
+          const legacyExcluded = ["property type", "3d/photo", "area", "unit type"];
+          const otherGroups = filtersResponse.filters.filter(
+            (f) => f.name && !legacyExcluded.includes(f.name.trim().toLowerCase())
+          );
+          setDynamicFilterGroups(otherGroups);
+        }
           
         // Store the type response data in state
         setTypeResponse(typeResponseData);
@@ -121,6 +163,7 @@ export const Gallery = () => {
               plotStatus: product.plotStatus || "",
               hasVoiceOver: !!product.hasVoiceOver,
               viewMode: product.viewMode || "",
+              filterTags: (product.filterTags && typeof product.filterTags === "object") ? product.filterTags : {},
             };
           });
           
@@ -167,7 +210,7 @@ export const Gallery = () => {
     if (data.length > 0) {
       filterData(searchQuery, selectedPropertyStatuses, selectedPropertyTypes, selectedAreas);
     }
-  }, [data, searchQuery, selectedPropertyStatuses, selectedPropertyTypes, selectedAreas, selectedBHKs, voiceOverOnly, selectedViewModes]);
+  }, [data, searchQuery, selectedPropertyStatuses, selectedPropertyTypes, selectedAreas, selectedBHKs, voiceOverOnly, selectedViewModes, selectedFilterTags]);
 
   const isMobile = windowWidth < 640;
 
@@ -212,6 +255,18 @@ export const Gallery = () => {
       );
     }
 
+    Object.keys(selectedFilterTags).forEach((groupName) => {
+      const selectedOpts = selectedFilterTags[groupName];
+      if (selectedOpts && selectedOpts.length > 0) {
+        filtered = filtered.filter(
+          (item) =>
+            item.filterTags &&
+            Array.isArray(item.filterTags[groupName]) &&
+            item.filterTags[groupName].some((v) => selectedOpts.includes(v))
+        );
+      }
+    });
+
     setFilteredData(filtered);
   };
 
@@ -229,6 +284,7 @@ export const Gallery = () => {
     setSelectedBHKs([]);
     setVoiceOverOnly(false);
     setSelectedViewModes([]);
+    setSelectedFilterTags({});
     setFilteredData([...data]);
   };
 
@@ -619,8 +675,7 @@ export const Gallery = () => {
     // Always use getOptions() to ensure filtering logic is applied consistently
     const displayOptions = getOptions();
 
-    if (title === "Tag") {
-      const bhkOptions = ["2 BHK", "3 BHK", "3.5 BHK", "4 BHK", "5 BHK", "Penthouse"];
+    if (title === unitTypeGroupName) {
       const toggleArrayValue = (setter, currentArray, value) => {
         setter(
           currentArray.includes(value)
@@ -634,7 +689,7 @@ export const Gallery = () => {
         <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4" onClick={(e) => e.stopPropagation()}>
           <div className="bg-gray-900 rounded-xl max-w-md w-full border border-gray-700 shadow-2xl flex flex-col" style={{ maxHeight: '80vh' }}>
             <div className="bg-gray-900 p-4 border-b border-gray-800 flex justify-between items-center">
-              <h3 className="text-xl font-medium">Tag</h3>
+              <h3 className="text-xl font-medium">{title}</h3>
               <button onClick={onClose} className="text-gray-400 hover:text-white">
                 <FiX size={24} />
               </button>
@@ -650,27 +705,46 @@ export const Gallery = () => {
                   {selectedBHKs.includes(option) && <FiCheckCircle size={18} />}
                 </button>
               ))}
-              <button
-                onClick={() => toggleArrayValue(setSelectedViewModes, selectedViewModes, "Day")}
-                className={rowClass(selectedViewModes.includes("Day"))}
-              >
-                <span>Day</span>
-                {selectedViewModes.includes("Day") && <FiCheckCircle size={18} />}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    const matchedDynamicGroup = dynamicFilterGroups.find((g) => g.name === title);
+    if (matchedDynamicGroup) {
+      const currentSelectedTags = selectedFilterTags[title] || [];
+      const toggleTag = (value) => {
+        setSelectedFilterTags((prev) => {
+          const cur = prev[title] || [];
+          const updated = cur.includes(value)
+            ? cur.filter((v) => v !== value)
+            : [...cur, value];
+          return { ...prev, [title]: updated };
+        });
+      };
+      const rowClass = (active) =>
+        `w-full text-left px-4 py-3 hover:bg-gray-800 rounded-lg transition-colors flex items-center justify-between ${active ? "text-[#86BA3A]" : ""}`;
+      return (
+        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-gray-900 rounded-xl max-w-md w-full border border-gray-700 shadow-2xl flex flex-col" style={{ maxHeight: '80vh' }}>
+            <div className="bg-gray-900 p-4 border-b border-gray-800 flex justify-between items-center">
+              <h3 className="text-xl font-medium">{title}</h3>
+              <button onClick={onClose} className="text-gray-400 hover:text-white">
+                <FiX size={24} />
               </button>
-              <button
-                onClick={() => toggleArrayValue(setSelectedViewModes, selectedViewModes, "Night")}
-                className={rowClass(selectedViewModes.includes("Night"))}
-              >
-                <span>Night</span>
-                {selectedViewModes.includes("Night") && <FiCheckCircle size={18} />}
-              </button>
-              <button
-                onClick={() => setVoiceOverOnly((v) => !v)}
-                className={rowClass(voiceOverOnly)}
-              >
-                <span>Voice Over</span>
-                {voiceOverOnly && <FiCheckCircle size={18} />}
-              </button>
+            </div>
+            <div className="overflow-y-auto p-4" style={{ maxHeight: '60vh' }}>
+              {(matchedDynamicGroup.options || []).map((option) => (
+                <button
+                  key={option}
+                  onClick={() => toggleTag(option)}
+                  className={rowClass(currentSelectedTags.includes(option))}
+                >
+                  <span>{option}</span>
+                  {currentSelectedTags.includes(option) && <FiCheckCircle size={18} />}
+                </button>
+              ))}
             </div>
           </div>
         </div>
@@ -781,32 +855,42 @@ export const Gallery = () => {
                   <div className="flex overflow-x-auto gap-2 scrollbar-hide">
                     <FilterButton 
                       icon={<FiLayers size={18} />}
-                      label="Type"
+                      label={typeLabel}
                       onClick={() => handleDropdownClick("Property Type")}
                       active={selectedPropertyTypes.length > 0}
                       mobile
                     />
                     <FilterButton 
                       icon={<FiHome size={18} />}
-                      label="Status"
+                      label={statusLabel}
                       onClick={() => handleDropdownClick("Property Status")}
                       active={selectedPropertyStatuses.length > 0}
                       mobile
                     />
                     <FilterButton 
                       icon={<FiMapPin size={18} />}
-                      label="Area"
+                      label={areaLabel}
                       onClick={() => handleDropdownClick("Area")}
                       active={selectedAreas.length > 0}
                       mobile
                     />
                                         <FilterButton
-                      icon={<FiSliders size={18} />}
-                      label="Tag"
-                      onClick={() => handleDropdownClick("Tag")}
-                      active={selectedBHKs.length > 0 || voiceOverOnly || selectedViewModes.length > 0}
+                      icon={<FiFilter size={18} />}
+                      label={unitTypeGroupName}
+                      onClick={() => handleDropdownClick(unitTypeGroupName)}
+                      active={selectedBHKs.length > 0}
                       mobile
                     />
+                    {dynamicFilterGroups.map((group) => (
+                      <FilterButton
+                        key={group._id || group.name}
+                        icon={<FiFilter size={18} />}
+                        label={group.name}
+                        onClick={() => handleDropdownClick(group.name)}
+                        active={(selectedFilterTags[group.name] || []).length > 0}
+                        mobile
+                      />
+                    ))}
                     <button
                       onClick={handleReset}
                       className={`p-2 rounded-full border flex-shrink-0 ${
@@ -848,28 +932,37 @@ export const Gallery = () => {
               <div className="flex gap-2">
                 <FilterButton 
                   icon={<FiLayers size={16} />}
-                  label="Type"
+                  label={typeLabel}
                   onClick={() => handleDropdownClick("Property Type")}
                   active={selectedPropertyTypes.length > 0}
                 />
                 <FilterButton 
                   icon={<FiHome size={16} />}
-                  label="Status"
+                  label={statusLabel}
                   onClick={() => handleDropdownClick("Property Status")}
                   active={selectedPropertyStatuses.length > 0}
                 />
                 <FilterButton 
                   icon={<FiMapPin size={16} />}
-                  label="Area"
+                  label={areaLabel}
                   onClick={() => handleDropdownClick("Area")}
                   active={selectedAreas.length > 0}
                 />
-                                <FilterButton
-                  icon={<FiSliders size={16} />}
-                  label="Tag"
-                  onClick={() => handleDropdownClick("Tag")}
-                  active={selectedBHKs.length > 0 || voiceOverOnly || selectedViewModes.length > 0}
+                <FilterButton
+                  icon={<FiFilter size={16} />}
+                  label={unitTypeGroupName}
+                  onClick={() => handleDropdownClick(unitTypeGroupName)}
+                  active={selectedBHKs.length > 0}
                 />
+                {dynamicFilterGroups.map((group) => (
+                  <FilterButton
+                    key={group._id || group.name}
+                    icon={<FiFilter size={16} />}
+                    label={group.name}
+                    onClick={() => handleDropdownClick(group.name)}
+                    active={(selectedFilterTags[group.name] || []).length > 0}
+                  />
+                ))}
               </div>
             </div>
           </div>

@@ -117,3 +117,32 @@ export const fetchAreas = async () => {
     throw error;
   }
 };
+
+export const fetchFilters = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/admin/filters`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching filters:", error);
+    throw error;
+  }
+};
+
+
+/**
+ * Display names for the Type / Status / Area filter buttons, set from the admin panel.
+ * Returns { propertyType?, propertyStatus?, area? }. Never throws.
+ */
+export const fetchLegacyFilterLabels = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/admin/legacy-filters`);
+    const map = {};
+    (response.data.configs || []).forEach((c) => {
+      if (c.label) map[c.key] = c.label;
+    });
+    return map;
+  } catch (error) {
+    console.error('Error fetching legacy filter labels:', error);
+    return {};
+  }
+};
